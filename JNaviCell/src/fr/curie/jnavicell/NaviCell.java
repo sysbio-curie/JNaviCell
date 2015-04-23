@@ -2,7 +2,10 @@ package fr.curie.jnavicell;
 
 import java.awt.List;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -13,6 +16,7 @@ import javax.net.ssl.SSLContext;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -25,7 +29,6 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
@@ -76,8 +79,13 @@ public class NaviCell {
 		return(session_id);
 	}
 	
+	/**
+	 * Build a HttpClient object trusting any SSL certificate.
+	 * 
+	 * @return HttpClient object
+	 */
 	@SuppressWarnings("deprecation")
-	public HttpClient buildHttpClient() {
+	private HttpClient buildHttpClient() {
 		HttpClientBuilder b = HttpClientBuilder.create();
 
 		SSLContext sslContext = null;
@@ -94,8 +102,8 @@ public class NaviCell {
 		}
 
 		// or SSLConnectionSocketFactory.getDefaultHostnameVerifier(), if you don't want to weaken
-		HostnameVerifier hostnameVerifier = SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
-
+		//HostnameVerifier hostnameVerifier = SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+		HostnameVerifier hostnameVerifier = SSLConnectionSocketFactory.getDefaultHostnameVerifier();
 		SSLConnectionSocketFactory sslSocketFactory = new SSLConnectionSocketFactory(sslContext, hostnameVerifier);
 		Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
 		        .register("http", PlainConnectionSocketFactory.getSocketFactory())
@@ -103,56 +111,87 @@ public class NaviCell {
 		        .build();
 
 		// allows multi-threaded use
-		PoolingHttpClientConnectionManager connMgr = new PoolingHttpClientConnectionManager( socketFactoryRegistry);
-		b.setConnectionManager( connMgr);
+		PoolingHttpClientConnectionManager connMgr = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
+		b.setConnectionManager(connMgr);
 
 		HttpClient client = b.build();
+		
 		return client;
 	}
-	
+
+	public String sendToServer(UrlEncodedFormEntity url) {
+		String ret = "";
+		try {
+			HttpPost httppost = new HttpPost(getProxyUrl());
+			httppost.setEntity(url);
+			
+			HttpClient client = buildHttpClient();
+			
+			HttpResponse response = client.execute(httppost); 
+			ret = EntityUtils.toString(response.getEntity());
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ret;
+	}
 	
 	public static void main(String[] args) {
 		
-		NaviCell n = new NaviCell();
 		
-		//HttpClient httpclient = HttpClients.createDefault();
-		HttpClient httpclient = n.buildHttpClient();
-		HttpPost httppost = new HttpPost(n.getProxyUrl());
-		
-		// Request parameters and other properties.
 		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>(4);
 		params.add(new BasicNameValuePair("id", "1"));
 		params.add(new BasicNameValuePair("perform", "genid"));
 		params.add(new BasicNameValuePair("msg_id", "1001"));
 		params.add(new BasicNameValuePair("mode", "session"));
+		UrlEncodedFormEntity myUrl = null;
 		try {
-			httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
+			myUrl = new UrlEncodedFormEntity(params, "UTF-8");
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		//Execute and get the response.
-		HttpResponse response = null;
-		try {
-			response = httpclient.execute(httppost);
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		HttpEntity entity = response.getEntity();
-		try {
-			System.out.println(EntityUtils.toString(entity));
-		} catch (UnsupportedOperationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+		NaviCell n = new NaviCell();
+		
+		String ret = n.sendToServer(myUrl);
+		System.out.println(ret);
+		
+		
+//		NaviCell n = new NaviCell();
+//
+//		//HttpClient httpclient = HttpClients.createDefault();
+//		HttpClient httpclient = n.buildHttpClient();
+//		HttpPost httppost = new HttpPost(n.getProxyUrl());
+//
+//		// Request parameters and other properties.
+//		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>(4);
+//		params.add(new BasicNameValuePair("id", "1"));
+//		params.add(new BasicNameValuePair("perform", "genid"));
+//		params.add(new BasicNameValuePair("msg_id", "1001"));
+//		params.add(new BasicNameValuePair("mode", "session"));
+//		try {
+//			UrlEncodedFormEntity myUrl = new UrlEncodedFormEntity(params, "UTF-8");
+//			System.out.println(EntityUtils.toString(myUrl));
+//			httppost.setEntity(myUrl);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//
+//		//Execute and get the response.
+//		HttpResponse response = null;
+//		try {
+//			response = httpclient.execute(httppost);
+//		} catch (ClientProtocolException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		HttpEntity entity = response.getEntity();
+//		try {
+//			System.out.println(EntityUtils.toString(entity));
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 		
 	}
 	
