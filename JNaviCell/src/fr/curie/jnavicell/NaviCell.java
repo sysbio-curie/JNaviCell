@@ -9,6 +9,7 @@ import java.net.URLConnection;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Set;
 
 import javax.net.ssl.HostnameVerifier;
@@ -31,8 +32,11 @@ import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.apache.http.NameValuePair;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 /**
  * Java binding for NaviCell REST API.
@@ -46,7 +50,7 @@ public class NaviCell {
 	private String proxy_url = "https://navicell.curie.fr/cgi-bin/nv_proxy.php";
 	private int msg_id = 1000;
 	private Set<String> hugo_list;
-	private String session_id ="";
+	private String session_id = "1429796215337929130026";
 	
 	NaviCell() {
 		// nothing to be done here.
@@ -119,9 +123,16 @@ public class NaviCell {
 		return client;
 	}
 
+	/**
+	 * Send a POST request to the NaviCell server.
+	 * @param url
+	 * @return String server response
+	 */
 	public String sendToServer(UrlEncodedFormEntity url) {
 		String ret = "";
 		try {
+			System.out.println(EntityUtils.toString(url));
+			
 			HttpPost httppost = new HttpPost(getProxyUrl());
 			httppost.setEntity(url);
 			
@@ -136,26 +147,70 @@ public class NaviCell {
 		return ret;
 	}
 	
-	public static void main(String[] args) {
-		
-		
+	/**
+	 * Generate a valid session ID.
+	 * 
+	 * @throws UnsupportedEncodingException
+	 */
+	public void generateSessionID() throws UnsupportedEncodingException {
 		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>(4);
 		params.add(new BasicNameValuePair("id", "1"));
 		params.add(new BasicNameValuePair("perform", "genid"));
-		params.add(new BasicNameValuePair("msg_id", "1001"));
+		params.add(new BasicNameValuePair("msg_id", Integer.toString(msg_id)));
 		params.add(new BasicNameValuePair("mode", "session"));
 		UrlEncodedFormEntity myUrl = null;
+		myUrl = new UrlEncodedFormEntity(params, "UTF-8");
+		
+		String ID = sendToServer(myUrl);
+		session_id = ID;
+	}
+	private void increaseMessageID() {
+		msg_id++;
+	}
+	public boolean serverIsReady() throws UnsupportedEncodingException {
+		boolean ret = false;
+		
+		increaseMessageID();
+		
+		JSONObject jo = new JSONObject();
+		jo.put("module", "");
+		jo.put("args", new JSONArray());
+		jo.put("msg_id", msg_id);
+		jo.put("action", "nv_is_ready");
+		
+		String str_data = "@COMMAND " + jo.toJSONString();
+		System.out.println(str_data);
+		
+		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("id", session_id));
+		params.add(new BasicNameValuePair("mode", "cli2srv"));
+		params.add(new BasicNameValuePair("perform", "send_and_rcv"));
+		params.add(new BasicNameValuePair("data", str_data));
+		UrlEncodedFormEntity url = new UrlEncodedFormEntity(params, "UTF-8");
+		String rep = sendToServer(url);
+		System.out.println(rep);
+		
+		return ret;
+	}
+	
+	public static void main(String[] args) {
+		NaviCell n = new NaviCell();
 		try {
-			myUrl = new UrlEncodedFormEntity(params, "UTF-8");
-		} catch (Exception e) {
+			//n.generateSessionID();
+			System.out.println(n.getSessionId());
+			//n.generateSessionID();
+			System.out.println(n.getSessionId());
+			n.serverIsReady();
+		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
 		
-		NaviCell n = new NaviCell();
-		
-		String ret = n.sendToServer(myUrl);
-		System.out.println(ret);
-		
+//		JSONObject obj=new JSONObject();
+//		obj.put("data", 10);
+//		System.out.println(obj);
+//		JSONArray l = new JSONArray();
+//		obj.put("test", l);
+//		System.out.println(obj);
 		
 //		NaviCell n = new NaviCell();
 //
