@@ -139,6 +139,7 @@ public class NaviCell {
 			HttpClient client = buildHttpClient();
 			
 			HttpResponse response = client.execute(httppost); 
+			//System.out.println(response);
 			ret = EntityUtils.toString(response.getEntity());
 		}
 		catch (Exception e) {
@@ -187,19 +188,31 @@ public class NaviCell {
 		params.add(new BasicNameValuePair("perform", "send_and_rcv"));
 		params.add(new BasicNameValuePair("data", str_data));
 		UrlEncodedFormEntity url = new UrlEncodedFormEntity(params, "UTF-8");
+		System.out.println("sending to server...");
 		String rep = sendToServer(url);
 		System.out.println(rep);
 		
 		return ret;
 	}
 	
+	public void launchBrowser() {
+		 try {
+	         //Set your page url in this string. For eg, I m using URL for Google Search engine
+			 String url = map_url + "?id=" + session_id;
+	         java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
+	       }
+	       catch (java.io.IOException e) {
+	           System.out.println(e.getMessage());
+	           e.printStackTrace();
+	       }
+	}
+	
 	public static void main(String[] args) {
 		NaviCell n = new NaviCell();
 		try {
-			//n.generateSessionID();
+			n.generateSessionID();
 			System.out.println(n.getSessionId());
-			//n.generateSessionID();
-			System.out.println(n.getSessionId());
+			n.launchBrowser();
 			n.serverIsReady();
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
