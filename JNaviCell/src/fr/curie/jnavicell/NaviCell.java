@@ -9,6 +9,7 @@ import java.net.URLConnection;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Set;
 
@@ -118,6 +119,32 @@ public class NaviCell {
 		}
 	}
 	
+	public UrlEncodedFormEntity buildUrl(ArrayList<Object> arg, String action, String module) {
+		UrlEncodedFormEntity url = null;
+		
+		JSONArray ja = new JSONArray();
+		for (Object obj : arg) {
+			ja.add(obj);
+		}
+		String str_data = "@COMMAND " + ja.toJSONString();
+		System.out.println(str_data);
+		
+		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("id", session_id));
+		params.add(new BasicNameValuePair("mode", "cli2srv"));
+		params.add(new BasicNameValuePair("perform", "send_and_rcv"));
+		params.add(new BasicNameValuePair("data", str_data));
+		System.out.println(params);
+		
+		try {
+			url = new UrlEncodedFormEntity(params, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		
+		
+		return url;
+	}
 	/**
 	 * Build a HttpClient object trusting any SSL certificate.
 	 * 
@@ -203,6 +230,16 @@ public class NaviCell {
 		msg_id++;
 	}
 	
+	private void waitForReady() {
+		while (serverIsReady() == false) {
+			try {
+				//System.out.println("waiting for server..");
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
 	/**
 	 * Returns true if NaviCell server is ready.
@@ -212,22 +249,22 @@ public class NaviCell {
 	public boolean serverIsReady() {
 		boolean ret = false;
 		increaseMessageID();
-		
+
 		JSONObject jo = new JSONObject();
 		jo.put("module", "");
 		jo.put("args", new JSONArray());
 		jo.put("msg_id", msg_id);
 		jo.put("action", "nv_is_ready");
-		
+
 		String str_data = "@COMMAND " + jo.toJSONString();
 		//System.out.println(str_data);
-		
+
 		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("id", session_id));
 		params.add(new BasicNameValuePair("mode", "cli2srv"));
 		params.add(new BasicNameValuePair("perform", "send_and_rcv"));
 		params.add(new BasicNameValuePair("data", str_data));
-		
+
 		UrlEncodedFormEntity url = null;
 		try {
 			url = new UrlEncodedFormEntity(params, "UTF-8");
@@ -235,19 +272,18 @@ public class NaviCell {
 			// normal answer: {"status":0,"msg_id":1001,"data":true}
 			JSONParser parser = new JSONParser();
 			JSONObject o = (JSONObject) parser.parse(rep);
-			if (o.get("data").equals("true"))
+			if (o.get("data").toString().equals("true"))
 				ret = true;
-			
+
 		} catch (UnsupportedEncodingException e1) {
 			e1.printStackTrace();
 		}
 		catch (org.json.simple.parser.ParseException e) {
 			e.printStackTrace();
 		}
-		 
 		return ret;
 	}
-	
+
 	/**
 	 * Launch a browser session with the current ID and map URL.
 	 */
@@ -258,6 +294,7 @@ public class NaviCell {
 				generateSessionID();
 			String url = map_url + "?id=" + session_id;
 			java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
+			waitForReady();
 		}
 		catch (java.io.IOException e) {
 			System.out.println(e.getMessage());
@@ -268,17 +305,20 @@ public class NaviCell {
 	// for testing purpose
 	public static void main(String[] args) {
 		NaviCell n = new NaviCell();
-		try {
-			n.generateSessionID();
-			n.launchBrowser();
-			Thread.sleep(4000);
-			n.setZoom("", 4);
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+		n.buildUrl(new ArrayList<Object>(Arrays.asList(new Integer(4), "toto")), "nv_set_zoom", "");
+		
+//		try {
+//			n.generateSessionID();
+//			n.launchBrowser();
+//			Thread.sleep(4000);
+//			n.setZoom("", 4);
+//		
+//		} catch (UnsupportedEncodingException e) {
+//			e.printStackTrace();
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
 		
 //		JSONObject obj=new JSONObject();
 //		obj.put("data", 10);
