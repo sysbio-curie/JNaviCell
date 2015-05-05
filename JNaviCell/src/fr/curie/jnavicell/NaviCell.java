@@ -37,6 +37,7 @@ import org.apache.http.util.EntityUtils;
 import org.apache.http.NameValuePair;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 /**
  * Java binding for NaviCell REST API.
@@ -44,13 +45,14 @@ import org.json.simple.JSONObject;
  * @author eb
  *
  */
+@SuppressWarnings("unchecked")
 public class NaviCell {
 
 	private String map_url = "https://navicell.curie.fr/navicell/maps/cellcycle/master/index.php";
 	private String proxy_url = "https://navicell.curie.fr/cgi-bin/nv_proxy.php";
 	private int msg_id = 1000;
 	private Set<String> hugo_list;
-	private String session_id = "1429796215337929130026";
+	private String session_id = "";
 	
 	NaviCell() {
 		// nothing to be done here.
@@ -58,6 +60,7 @@ public class NaviCell {
 
 	/**
 	 * Set the map_url address (NaviCell or ACSN map).
+	 * 
 	 * @param url string: valid NaviCell map web address.
 	 */
 	public void setMapUrl(String url) {
@@ -79,8 +82,40 @@ public class NaviCell {
 	public String getProxyUrl() {
 		return(proxy_url);
 	}
+	
 	public String getSessionId () {
 		return(session_id);
+	}
+	
+	public void setZoom(String module, int zoomLevel) {
+		
+		increaseMessageID();
+		JSONArray a = new JSONArray();
+		a.add(new Integer(zoomLevel));
+		JSONObject jo = new JSONObject();
+		jo.put("module", module);
+		jo.put("args", a);
+		jo.put("msg_id", msg_id);
+		jo.put("action", "nv_set_zoom");
+		
+		String str_data = "@COMMAND " + jo.toJSONString();
+		System.out.println(str_data);
+		
+		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("id", session_id));
+		params.add(new BasicNameValuePair("mode", "cli2srv"));
+		params.add(new BasicNameValuePair("perform", "send_and_rcv"));
+		params.add(new BasicNameValuePair("data", str_data));
+		System.out.println(params);
+		
+		UrlEncodedFormEntity url = null;
+		try {
+			url = new UrlEncodedFormEntity(params, "UTF-8");
+			String rep = sendToServer(url);
+			System.out.println(rep);
+		} catch (UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+		}
 	}
 	
 	/**
@@ -99,7 +134,7 @@ public class NaviCell {
 					return true;
 				}
 			}).build();
-			b.setSslcontext( sslContext);
+			b.setSslcontext(sslContext);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -128,16 +163,13 @@ public class NaviCell {
 	 * @param url
 	 * @return String server response
 	 */
-	public String sendToServer(UrlEncodedFormEntity url) {
+	private String sendToServer(UrlEncodedFormEntity url) {
 		String ret = "";
 		try {
-			System.out.println(EntityUtils.toString(url));
-			
+			//System.out.println(EntityUtils.toString(url));
 			HttpPost httppost = new HttpPost(getProxyUrl());
 			httppost.setEntity(url);
-			
 			HttpClient client = buildHttpClient();
-			
 			HttpResponse response = client.execute(httppost); 
 			//System.out.println(response);
 			ret = EntityUtils.toString(response.getEntity());
@@ -153,7 +185,8 @@ public class NaviCell {
 	 * 
 	 * @throws UnsupportedEncodingException
 	 */
-	public void generateSessionID() throws UnsupportedEncodingException {
+	private void generateSessionID() throws UnsupportedEncodingException {
+		
 		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>(4);
 		params.add(new BasicNameValuePair("id", "1"));
 		params.add(new BasicNameValuePair("perform", "genid"));
@@ -165,12 +198,19 @@ public class NaviCell {
 		String ID = sendToServer(myUrl);
 		session_id = ID;
 	}
+	
 	private void increaseMessageID() {
 		msg_id++;
 	}
-	public boolean serverIsReady() throws UnsupportedEncodingException {
+	
+
+	/**
+	 * Returns true if NaviCell server is ready.
+	 * 
+	 * @return boolean
+	 */
+	public boolean serverIsReady() {
 		boolean ret = false;
-		
 		increaseMessageID();
 		
 		JSONObject jo = new JSONObject();
@@ -180,41 +220,63 @@ public class NaviCell {
 		jo.put("action", "nv_is_ready");
 		
 		String str_data = "@COMMAND " + jo.toJSONString();
-		System.out.println(str_data);
+		//System.out.println(str_data);
 		
 		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("id", session_id));
 		params.add(new BasicNameValuePair("mode", "cli2srv"));
 		params.add(new BasicNameValuePair("perform", "send_and_rcv"));
 		params.add(new BasicNameValuePair("data", str_data));
-		UrlEncodedFormEntity url = new UrlEncodedFormEntity(params, "UTF-8");
-		System.out.println("sending to server...");
-		String rep = sendToServer(url);
-		System.out.println(rep);
 		
+		UrlEncodedFormEntity url = null;
+		try {
+			url = new UrlEncodedFormEntity(params, "UTF-8");
+			String rep = sendToServer(url);
+			// normal answer: {"status":0,"msg_id":1001,"data":true}
+			JSONParser parser = new JSONParser();
+			JSONObject o = (JSONObject) parser.parse(rep);
+			if (o.get("data").equals("true"))
+				ret = true;
+			
+		} catch (UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+		}
+		catch (org.json.simple.parser.ParseException e) {
+			e.printStackTrace();
+		}
+		 
 		return ret;
 	}
 	
+	/**
+	 * Launch a browser session with the current ID and map URL.
+	 */
 	public void launchBrowser() {
-		 try {
-	         //Set your page url in this string. For eg, I m using URL for Google Search engine
-			 String url = map_url + "?id=" + session_id;
-	         java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
-	       }
-	       catch (java.io.IOException e) {
-	           System.out.println(e.getMessage());
-	           e.printStackTrace();
-	       }
+		increaseMessageID();
+		try {
+			if (session_id == "")
+				generateSessionID();
+			String url = map_url + "?id=" + session_id;
+			java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
+		}
+		catch (java.io.IOException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
 	}
 	
+	// for testing purpose
 	public static void main(String[] args) {
 		NaviCell n = new NaviCell();
 		try {
 			n.generateSessionID();
-			System.out.println(n.getSessionId());
 			n.launchBrowser();
-			n.serverIsReady();
+			Thread.sleep(4000);
+			n.setZoom("", 4);
 		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
