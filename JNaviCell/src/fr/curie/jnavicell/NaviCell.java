@@ -298,8 +298,7 @@ public class NaviCell {
 		increaseMessageID();
 		UrlEncodedFormEntity url = buildUrl(module, "nv_set_zoom", new ArrayList<Object>(Arrays.asList(zoomLevel)));
 		if (url != null) {
-			String rep = sendToServer(url);
-			System.out.println(rep);
+			sendToServer(url);
 		}
 	}
 	
@@ -313,17 +312,113 @@ public class NaviCell {
 		increaseMessageID();
 		UrlEncodedFormEntity url = buildUrl(module, "nv_set_center", new ArrayList<Object>(Arrays.asList(location)));
 		if (url != null) {
-			String rep = sendToServer(url);
-			System.out.println(rep);
+			sendToServer(url);
 		}
 	}
 
+	/**
+	 * Set the absolute position of the map center.
+	 * 
+	 * @param module
+	 * @param x x-coordinate (integer)
+	 * @param y y-coordinate (integer)
+	 */
+	public void setMapCenterAbsolute(String module, int x, int y) {
+
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_set_center", new ArrayList<Object>(Arrays.asList("ABSOLUTE", x, y)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Move the map center (relative).
+	 * 
+	 * @param module
+	 * @param x relative x-coordinate
+	 * @param y relative y-coordinate
+	 */
+	public void moveMapCenter(String module, int x, int y) {
+
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_set_center", new ArrayList<Object>(Arrays.asList("RELATIVE", x, y)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	
+	/* ------------------------------------------------------------------------
+	 * Entity selection functions.
+	 * ------------------------------------------------------------------------
+	 */
+
+	/**
+	 * Find and select an entity on the map.
+	 * 
+	 * @param module
+	 * @param entity entity name (String)
+	 */
+	public void selectEntity(String module, String entity) {
+
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_find_entities", new ArrayList<Object>(Arrays.asList(entity)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Find one or more entities on the map according to a pattern (e.g. AKT*).
+	 * 
+	 * @param module
+	 * @param pattern entity's name pattern (String)
+	 * @param bubble display the bubble (boolean)
+	 */
+	public void findEntities(String module, String pattern, boolean bubble) {
+
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_find_entities", new ArrayList<Object>(Arrays.asList(pattern, bubble)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Uncheck all entities on the map.
+	 * 
+	 * @param module
+	 */
+	public void uncheckEntities(String module) {
+
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_uncheck_all_entities", new ArrayList<Object>());
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Un-highlight all entities on the map.
+	 * 
+	 * @param module
+	 */
+	public void unhighlightAllEntities(String module) {
+
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_unhighlight_all_entities", new ArrayList<Object>());
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
 
 	// for testing purpose
 	public static void main(String[] args) {
 		NaviCell n = new NaviCell();
 		n.launchBrowser();
-		n.setMapCenter("", "MAP_EAST");
+		n.findEntities("", "AT*", false);
+		n.unhighlightAllEntities("");
 		
 //		try {
 //			n.generateSessionID();
