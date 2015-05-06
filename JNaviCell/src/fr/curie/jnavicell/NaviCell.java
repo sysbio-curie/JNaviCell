@@ -55,6 +55,9 @@ public class NaviCell {
 	private Set<String> hugo_list;
 	private String session_id = "";
 	
+	/**
+	 * Constructor
+	 */
 	NaviCell() {
 		// nothing to be done here.
 	}
@@ -88,46 +91,48 @@ public class NaviCell {
 		return(session_id);
 	}
 	
+	/**
+	 * Set the zoom level on the current map.
+	 * 
+	 * @param module
+	 * @param zoomLevel
+	 */
 	public void setZoom(String module, int zoomLevel) {
 		
 		increaseMessageID();
-		JSONArray a = new JSONArray();
-		a.add(new Integer(zoomLevel));
-		JSONObject jo = new JSONObject();
-		jo.put("module", module);
-		jo.put("args", a);
-		jo.put("msg_id", msg_id);
-		jo.put("action", "nv_set_zoom");
-		
-		String str_data = "@COMMAND " + jo.toJSONString();
-		System.out.println(str_data);
-		
-		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("id", session_id));
-		params.add(new BasicNameValuePair("mode", "cli2srv"));
-		params.add(new BasicNameValuePair("perform", "send_and_rcv"));
-		params.add(new BasicNameValuePair("data", str_data));
-		System.out.println(params);
-		
-		UrlEncodedFormEntity url = null;
-		try {
-			url = new UrlEncodedFormEntity(params, "UTF-8");
+		UrlEncodedFormEntity url = buildUrl(module, "nv_set_zoom", new ArrayList<Object>(Arrays.asList(zoomLevel)));
+		if (url != null) {
 			String rep = sendToServer(url);
 			System.out.println(rep);
-		} catch (UnsupportedEncodingException e1) {
-			e1.printStackTrace();
 		}
 	}
 	
-	public UrlEncodedFormEntity buildUrl(ArrayList<Object> arg, String action, String module) {
+	/*
+	 * Session and utility functions.
+	 */
+	
+	/**
+	 * Encode URL for NaviCell server.
+	 * 
+	 * @param module (String)
+	 * @param action (String)
+	 * @param args list of objects for the 'args' array
+	 * @return UrlEncodedFormEntity url
+	 */
+	private UrlEncodedFormEntity buildUrl(String module, String action, ArrayList<Object> args) {
+		
 		UrlEncodedFormEntity url = null;
 		
+		// encode command string
 		JSONArray ja = new JSONArray();
-		for (Object obj : arg) {
+		for (Object obj : args)
 			ja.add(obj);
-		}
-		String str_data = "@COMMAND " + ja.toJSONString();
-		System.out.println(str_data);
+		JSONObject jo = new JSONObject();
+		jo.put("module", module);
+		jo.put("args", ja);
+		jo.put("msg_id", msg_id);
+		jo.put("action", action);
+		String str_data = "@COMMAND " + jo.toJSONString();
 		
 		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("id", session_id));
@@ -142,9 +147,9 @@ public class NaviCell {
 			e.printStackTrace();
 		}
 		
-		
 		return url;
 	}
+	
 	/**
 	 * Build a HttpClient object trusting any SSL certificate.
 	 * 
@@ -187,6 +192,7 @@ public class NaviCell {
 
 	/**
 	 * Send a POST request to the NaviCell server.
+	 * 
 	 * @param url
 	 * @return String server response
 	 */
@@ -230,8 +236,8 @@ public class NaviCell {
 		msg_id++;
 	}
 	
-	private void waitForReady() {
-		while (serverIsReady() == false) {
+	private void waitForReady(String module) {
+		while (serverIsReady(module) == false) {
 			try {
 				//System.out.println("waiting for server..");
 				Thread.sleep(500);
@@ -246,44 +252,28 @@ public class NaviCell {
 	 * 
 	 * @return boolean
 	 */
-	public boolean serverIsReady() {
+	public boolean serverIsReady(String module) {
 		boolean ret = false;
 		increaseMessageID();
 
-		JSONObject jo = new JSONObject();
-		jo.put("module", "");
-		jo.put("args", new JSONArray());
-		jo.put("msg_id", msg_id);
-		jo.put("action", "nv_is_ready");
-
-		String str_data = "@COMMAND " + jo.toJSONString();
-		//System.out.println(str_data);
-
-		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("id", session_id));
-		params.add(new BasicNameValuePair("mode", "cli2srv"));
-		params.add(new BasicNameValuePair("perform", "send_and_rcv"));
-		params.add(new BasicNameValuePair("data", str_data));
-
-		UrlEncodedFormEntity url = null;
-		try {
-			url = new UrlEncodedFormEntity(params, "UTF-8");
+		UrlEncodedFormEntity url = buildUrl(module, "nv_is_ready", new ArrayList<Object>());
+		if (url != null) {
 			String rep = sendToServer(url);
-			// normal answer: {"status":0,"msg_id":1001,"data":true}
 			JSONParser parser = new JSONParser();
-			JSONObject o = (JSONObject) parser.parse(rep);
-			if (o.get("data").toString().equals("true"))
-				ret = true;
-
-		} catch (UnsupportedEncodingException e1) {
-			e1.printStackTrace();
+			JSONObject o;
+			try {
+				o = (JSONObject) parser.parse(rep);
+				if (o.get("data").toString().equals("true"))
+					ret = true;
+			} catch (org.json.simple.parser.ParseException e) {
+				e.printStackTrace();
+			}
 		}
-		catch (org.json.simple.parser.ParseException e) {
-			e.printStackTrace();
-		}
+		
 		return ret;
 	}
-
+	
+	
 	/**
 	 * Launch a browser session with the current ID and map URL.
 	 */
@@ -294,7 +284,7 @@ public class NaviCell {
 				generateSessionID();
 			String url = map_url + "?id=" + session_id;
 			java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
-			waitForReady();
+			waitForReady("");
 		}
 		catch (java.io.IOException e) {
 			System.out.println(e.getMessage());
@@ -305,8 +295,8 @@ public class NaviCell {
 	// for testing purpose
 	public static void main(String[] args) {
 		NaviCell n = new NaviCell();
-		
-		n.buildUrl(new ArrayList<Object>(Arrays.asList(new Integer(4), "toto")), "nv_set_zoom", "");
+		n.launchBrowser();
+		n.setZoom("", 4);
 		
 //		try {
 //			n.generateSessionID();
