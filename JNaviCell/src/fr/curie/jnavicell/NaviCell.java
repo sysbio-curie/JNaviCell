@@ -91,25 +91,13 @@ public class NaviCell {
 		return(session_id);
 	}
 	
-	/**
-	 * Set the zoom level on the current map.
-	 * 
-	 * @param module
-	 * @param zoomLevel
-	 */
-	public void setZoom(String module, int zoomLevel) {
-		
-		increaseMessageID();
-		UrlEncodedFormEntity url = buildUrl(module, "nv_set_zoom", new ArrayList<Object>(Arrays.asList(zoomLevel)));
-		if (url != null) {
-			String rep = sendToServer(url);
-			System.out.println(rep);
-		}
-	}
 	
-	/*
+
+	/* ------------------------------------------------------------------------
 	 * Session and utility functions.
+	 * ------------------------------------------------------------------------
 	 */
+	
 	
 	/**
 	 * Encode URL for NaviCell server.
@@ -291,12 +279,51 @@ public class NaviCell {
 			e.printStackTrace();
 		}
 	}
+
 	
+	/* ------------------------------------------------------------------------
+	 * Navigation and zooming functions.
+	 * ------------------------------------------------------------------------
+	 */
+	
+	
+	/**
+	 * Set the zoom level on the current map.
+	 * 
+	 * @param module
+	 * @param zoomLevel
+	 */
+	public void setZoom(String module, int zoomLevel) {
+		
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_set_zoom", new ArrayList<Object>(Arrays.asList(zoomLevel)));
+		if (url != null) {
+			String rep = sendToServer(url);
+			System.out.println(rep);
+		}
+	}
+	
+	/**
+	 * Set the relative position of the map center. 
+	 * @param module
+	 * @param location = 'MAP_CENTER' or 'MAP_EAST' or 'MAP_SOUTH' or MAP_NORTH' or 'MAP_SOUTH_WEST' or 'MAP_SOUTH_EAST' or 'MAP_NORTH_EAST'.
+	 */
+	public void setMapCenter(String module, String location) {
+
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_set_center", new ArrayList<Object>(Arrays.asList(location)));
+		if (url != null) {
+			String rep = sendToServer(url);
+			System.out.println(rep);
+		}
+	}
+
+
 	// for testing purpose
 	public static void main(String[] args) {
 		NaviCell n = new NaviCell();
 		n.launchBrowser();
-		n.setZoom("", 4);
+		n.setMapCenter("", "MAP_EAST");
 		
 //		try {
 //			n.generateSessionID();
