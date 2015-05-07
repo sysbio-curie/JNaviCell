@@ -534,7 +534,7 @@ public class NaviCell {
 			datatable_sample_list = ar;
 		}
 	}
-
+	
 	/**
 	 * Get the list of genes from all imported datatables.
 	 * 
@@ -551,6 +551,13 @@ public class NaviCell {
 			datatable_gene_list = ar;
 		}
 	}
+
+
+	/* ------------------------------------------------------------------------
+	 * Data import functions.
+	 * ------------------------------------------------------------------------
+	 */
+	
 
 	/**
 	 * Load data from a file.
@@ -594,11 +601,19 @@ public class NaviCell {
 		return sb.toString();
 	}
 	
-	public void importData(String module, String fileName, String biotype, String datatable_name) {
+	/**
+	 * Import data into current NaviCell session.
+	 * 
+	 * @param module module name.
+	 * @param fileName file (with complete path) name.
+	 * @param biotype NaviCell data type.
+	 * @param datatableName name of the datatable.
+	 */
+	public void importData(String module, String fileName, String biotype, String datatableName) {
 		String str_data = loadDataFromFile(fileName);
 		increaseMessageID();
 		UrlEncodedFormEntity url = buildUrl(module, "nv_import_datatables", 
-				new ArrayList<Object>(Arrays.asList(biotype, datatable_name, "", str_data, new JSONObject())));
+				new ArrayList<Object>(Arrays.asList(biotype, datatableName, "", str_data, new JSONObject())));
 		if (url != null) {
 			sendToServer(url);
 		}
