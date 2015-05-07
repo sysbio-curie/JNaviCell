@@ -560,12 +560,12 @@ public class NaviCell {
 	
 
 	/**
-	 * Load data from a file.
+	 * Load data from a file and select genes (HUGO sy).
 	 * 
 	 * @param fileName Path to the file
 	 * @return NaviCell compatible string data (String)
 	 */
-	private String loadDataFromFile(String fileName) {
+	private String loadAndFilterDataFromFile(String fileName) {
 		
 		// get hugo gene list if it's not set
 		if (hugo_list.size() == 0)
@@ -610,7 +610,7 @@ public class NaviCell {
 	 * @param datatableName name of the datatable.
 	 */
 	public void importData(String module, String fileName, String biotype, String datatableName) {
-		String str_data = loadDataFromFile(fileName);
+		String str_data = loadAndFilterDataFromFile(fileName);
 		increaseMessageID();
 		UrlEncodedFormEntity url = buildUrl(module, "nv_import_datatables", 
 				new ArrayList<Object>(Arrays.asList(biotype, datatableName, "", str_data, new JSONObject())));
@@ -627,7 +627,6 @@ public class NaviCell {
 //		n.getModules("");
 //		n.getDatatableGenes("");
 //		System.out.println(n.getDatatableGeneList());
-		n.loadDataFromFile("/Users/eric/wk/RNaviCell_test/ovca_expression.txt");
 		
 		//n.importData("", "/Users/eric/wk/RNaviCell_test/ovca_expression.txt", "mRNA Expression data", "test");
 		
