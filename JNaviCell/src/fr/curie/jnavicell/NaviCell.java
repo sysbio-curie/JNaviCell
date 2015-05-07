@@ -1,6 +1,9 @@
 package fr.curie.jnavicell;
 
 import java.awt.List;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -549,14 +552,69 @@ public class NaviCell {
 		}
 	}
 
+	/**
+	 * Load data from a file.
+	 * 
+	 * @param fileName Path to the file
+	 * @return NaviCell compatible string data (String)
+	 */
+	private String loadDataFromFile(String fileName) {
+		
+		// get hugo gene list if it's not set
+		if (hugo_list.size() == 0)
+			getHugoList("");
+		
+		StringBuilder sb = new StringBuilder();
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(new File(fileName)));
+			String line;
+			int ct=0;
+			int count_genes = 0;
+			sb.append("@DATA\n");
+			while((line = br.readLine()) != null) {
+				if (ct>1) {
+					String[] tokens = line.split("\\s|\\t");
+					// select genes that are present on the map
+					if (hugo_list.contains(tokens[0])) {
+						sb.append(line+"\n");
+						count_genes++;
+					}
+				}
+				else {
+					sb.append(line+"\n");
+				}
+				ct++;
+			}
+			br.close();
+			System.out.println(count_genes + " genes selected.");
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return sb.toString();
+	}
+	
+	public void importData(String module, String fileName, String biotype, String datatable_name) {
+		String str_data = loadDataFromFile(fileName);
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_import_datatables", 
+				new ArrayList<Object>(Arrays.asList(biotype, datatable_name, "", str_data, new JSONObject())));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	
 	// for testing purpose
 	public static void main(String[] args) {
 		NaviCell n = new NaviCell();
 		n.launchBrowser();
-		n.getModules("");
-		n.getDatatableGenes("");
-		System.out.println(n.getDatatableGeneList());
+//		n.getModules("");
+//		n.getDatatableGenes("");
+//		System.out.println(n.getDatatableGeneList());
+		n.loadDataFromFile("/Users/eric/wk/RNaviCell_test/ovca_expression.txt");
 		
+		//n.importData("", "/Users/eric/wk/RNaviCell_test/ovca_expression.txt", "mRNA Expression data", "test");
 		
 //		try {
 //			n.generateSessionID();
