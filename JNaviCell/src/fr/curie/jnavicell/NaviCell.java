@@ -55,7 +55,11 @@ public class NaviCell {
 	private String proxy_url = "https://navicell.curie.fr/cgi-bin/nv_proxy.php";
 	private int msg_id = 1000;
 	private Set<String> hugo_list = new HashSet<String>();
-	private JSONArray biotype_list; 
+	private JSONArray biotype_list;
+	private JSONArray module_list;
+	private JSONArray datatable_list;
+	private JSONArray datatable_sample_list; 
+	private JSONArray datatable_gene_list;
 	private String session_id = "";
 	
 	/**
@@ -86,6 +90,22 @@ public class NaviCell {
 		return(biotype_list);
 	}
 	
+	public JSONArray getModuleList() {
+		return(module_list);
+	}
+
+	public JSONArray getDatatableList() {
+		return(datatable_list);
+	}
+
+	public JSONArray getDatatableSampleList() {
+		return(datatable_sample_list);
+	}
+
+	public JSONArray getDatatableGeneList() {
+		return(datatable_gene_list);
+	}
+
 	public String getMapUrl() {
 		return(map_url);
 	}
@@ -449,7 +469,7 @@ public class NaviCell {
 	 * 
 	 * @param module
 	 */
-	public void getBiotype(String module) {
+	public void getBiotypes(String module) {
 
 		increaseMessageID();
 		UrlEncodedFormEntity url = buildUrl(module, "nv_get_biotype_list", new ArrayList<Object>());
@@ -460,14 +480,83 @@ public class NaviCell {
 			biotype_list = ar;
 		}
 	}
-	
-	
+
+	/**
+	 * Get the list of modules defined on the current map.
+	 * 
+	 * @param module
+	 */
+	public void getModules(String module) {
+
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_get_module_list", new ArrayList<Object>());
+		if (url != null) {
+			String rep = sendToServer(url);
+			JSONObject obj = (JSONObject) JSONValue.parse(rep);
+			JSONArray ar = (JSONArray) obj.get("data");
+			module_list = ar;
+		}
+	}
+
+	/**
+	 * Get the list of imported datatables.
+	 * 
+	 * @param module
+	 */
+	public void getImportedDatatables(String module) {
+
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_get_datatable_list", new ArrayList<Object>());
+		if (url != null) {
+			String rep = sendToServer(url);
+			JSONObject obj = (JSONObject) JSONValue.parse(rep);
+			JSONArray ar = (JSONArray) obj.get("data");
+			datatable_list = ar;
+		}
+	}
+
+	/**
+	 * Get the list of samples from all imported datatables.
+	 * 
+	 * @param module
+	 */
+	public void getDatatableSamples(String module) {
+
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_get_datatable_sample_list", new ArrayList<Object>());
+		if (url != null) {
+			String rep = sendToServer(url);
+			JSONObject obj = (JSONObject) JSONValue.parse(rep);
+			JSONArray ar = (JSONArray) obj.get("data");
+			datatable_sample_list = ar;
+		}
+	}
+
+	/**
+	 * Get the list of genes from all imported datatables.
+	 * 
+	 * @param module
+	 */
+	public void getDatatableGenes(String module) {
+
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_get_datatable_gene_list", new ArrayList<Object>());
+		if (url != null) {
+			String rep = sendToServer(url);
+			JSONObject obj = (JSONObject) JSONValue.parse(rep);
+			JSONArray ar = (JSONArray) obj.get("data");
+			datatable_gene_list = ar;
+		}
+	}
+
 	// for testing purpose
 	public static void main(String[] args) {
 		NaviCell n = new NaviCell();
 		n.launchBrowser();
-		n.getBiotype("");
-		System.out.println(n.getBiotypeList());
+		n.getModules("");
+		n.getDatatableGenes("");
+		System.out.println(n.getDatatableGeneList());
+		
 		
 //		try {
 //			n.generateSessionID();
