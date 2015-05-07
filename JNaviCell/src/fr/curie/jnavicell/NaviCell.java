@@ -10,6 +10,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
@@ -38,6 +39,7 @@ import org.apache.http.util.EntityUtils;
 import org.apache.http.NameValuePair;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 
 /**
@@ -52,7 +54,8 @@ public class NaviCell {
 	private String map_url = "https://navicell.curie.fr/navicell/maps/cellcycle/master/index.php";
 	private String proxy_url = "https://navicell.curie.fr/cgi-bin/nv_proxy.php";
 	private int msg_id = 1000;
-	private Set<String> hugo_list;
+	private Set<String> hugo_list = new HashSet<String>();
+	private JSONArray biotype_list; 
 	private String session_id = "";
 	
 	/**
@@ -79,6 +82,10 @@ public class NaviCell {
 		return(hugo_list);
 	}
 
+	public JSONArray getBiotypeList() {
+		return(biotype_list);
+	}
+	
 	public String getMapUrl() {
 		return(map_url);
 	}
@@ -234,7 +241,7 @@ public class NaviCell {
 			}
 		}
 	}
-
+	
 	/**
 	 * Returns true if NaviCell server is ready.
 	 * 
@@ -413,12 +420,54 @@ public class NaviCell {
 		}
 	}
 
+	
+	/* ------------------------------------------------------------------------
+	 * Get info from maps functions.
+	 * ------------------------------------------------------------------------
+	 */
+	
+	/**
+	 * Get the list of the HUGO gene symbols for the current map and set the field hugo_list.
+	 * 
+	 * @param module
+	 */
+	public void getHugoList(String module) {
+
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_get_hugo_list", new ArrayList<Object>());
+		if (url != null) {
+			String rep = sendToServer(url);
+			JSONObject obj = (JSONObject) JSONValue.parse(rep);
+			JSONArray ar = (JSONArray) obj.get("data");
+			for (int i=0;i<ar.size();i++)
+				hugo_list.add((String) ar.get(i));
+		}
+	}
+	
+	/**
+	 * get the list of NaviCell internal data types (biotypes).
+	 * 
+	 * @param module
+	 */
+	public void getBiotype(String module) {
+
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_get_biotype_list", new ArrayList<Object>());
+		if (url != null) {
+			String rep = sendToServer(url);
+			JSONObject obj = (JSONObject) JSONValue.parse(rep);
+			JSONArray ar = (JSONArray) obj.get("data");
+			biotype_list = ar;
+		}
+	}
+	
+	
 	// for testing purpose
 	public static void main(String[] args) {
 		NaviCell n = new NaviCell();
 		n.launchBrowser();
-		n.findEntities("", "AT*", false);
-		n.unhighlightAllEntities("");
+		n.getBiotype("");
+		System.out.println(n.getBiotypeList());
 		
 //		try {
 //			n.generateSessionID();
