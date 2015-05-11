@@ -716,11 +716,12 @@ public class NaviCell {
 	/**
 	 * Select Glyph in drawing configuration dialog.
 	 * @param module
+	 * @param glyph_num glyph number (integer between 1 and 5)
 	 * @param check Boolean 
 	 */
-	public void drawingConfigSelectGlyph(String module, Boolean check) {
+	public void drawingConfigSelectGlyph(String module, int glyph_num, Boolean check) {
 		increaseMessageID();
-		UrlEncodedFormEntity url = buildUrl(module, "nv_drawing_config_perform", new ArrayList<Object>(Arrays.asList("select_glyph", check)));
+		UrlEncodedFormEntity url = buildUrl(module, "nv_drawing_config_perform", new ArrayList<Object>(Arrays.asList("select_glyph", glyph_num, check)));
 		if (url != null) {
 			sendToServer(url);
 		}
@@ -769,6 +770,10 @@ public class NaviCell {
 		NaviCell n = new NaviCell();
 		n.launchBrowser();
 		n.drawingConfigOpen("");
+		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+		n.drawingConfigSelectDisplaySelectedGenes("");
+		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+		n.drawingConfigSelectDisplayAllGenes("");		
 		
 		//		n.importData("", "/Users/eric/wk/RNaviCell_test/ovca_expression.txt", "mRNA Expression data", "test");
 //		n.importSampleAnnotation("", "/Users/eric/wk/RNaviCell_test/ovca_sampleinfo.txt");
