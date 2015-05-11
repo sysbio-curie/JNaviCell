@@ -854,6 +854,146 @@ public class NaviCell {
 		}
 	}
 	
+	/* ------------------------------------------------------------------------
+	 * My Data Dialog functions.
+	 * ------------------------------------------------------------------------
+	 */
+
+	/**
+	 * Open the glyph editor dialog.
+	 * @param module
+	 * @param glyph_num glyph number (integer between 1 and 5)
+	 */
+	public void glyphEditorOpen(String module, int glyph_num) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_glyph_editor_perform", new ArrayList<Object>(Arrays.asList("open", glyph_num)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Close the glyph editor dialog.
+	 * @param module
+	 * @param glyph_num glyph number (integer between 1 and 5)
+	 */
+	public void glyphEditorClose(String module, int glyph_num) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_glyph_editor_perform", new ArrayList<Object>(Arrays.asList("close", glyph_num)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Apply changes to the glyph editor dialog.
+	 * @param module
+	 * @param glyph_num glyph number (integer between 1 and 5)
+	 */
+	public void glyphEditorApply(String module, int glyph_num) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_glyph_editor_perform", new ArrayList<Object>(Arrays.asList("apply", glyph_num)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Apply changes to the glyph editor and close the dialog.
+	 * @param module
+	 * @param glyph_num glyph number (integer between 1 and 5)
+	 */
+	public void glyphEditorApplyAndClose(String module, int glyph_num) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_glyph_editor_perform", new ArrayList<Object>(Arrays.asList("apply_and_close", glyph_num)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Cancel changes on the glyph editor.
+	 * @param module
+	 * @param glyph_num glyph number (integer between 1 and 5)
+	 */
+	public void glyphEditorCancel(String module, int glyph_num) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_glyph_editor_perform", new ArrayList<Object>(Arrays.asList("cancel", glyph_num)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Select a sample in the glyph editor.
+	 * @param module
+	 * @param glyph_num glyph number (integer between 1 and 5)
+	 * @param sample_name sample name (String)
+	 */
+	public void glyphEditorSelectSample(String module, int glyph_num, String sample_name) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_glyph_editor_perform", new ArrayList<Object>(Arrays.asList("select_sample", glyph_num, sample_name)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Select datatable for glyph shape in glyph editor.
+	 * @param module
+	 * @param glyph_num glyph number (integer between 1 and 5)
+	 * @param datatable_name datatable name (String)
+	 */
+	public void glyphEditorSelectShapeDatatable(String module, int glyph_num, String datatable_name) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_glyph_editor_perform", new ArrayList<Object>(Arrays.asList("select_datatable_shape", glyph_num, datatable_name)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+
+	/**
+	 * Select datatable for glyph color in glyph editor.
+	 * @param module
+	 * @param glyph_num glyph number (integer between 1 and 5)
+	 * @param datatable_name datatable name (String)
+	 */
+	public void glyphEditorSelectColorDatatable(String module, int glyph_num, String datatable_name) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_glyph_editor_perform", new ArrayList<Object>(Arrays.asList("select_datatable_color", glyph_num, datatable_name)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Select datatable for glyph size in glyph editor.
+	 * @param module
+	 * @param glyph_num glyph number (integer between 1 and 5)
+	 * @param datatable_name datatable name (String)
+	 */
+	public void glyphEditorSelectSizeDatatable(String module, int glyph_num, String datatable_name) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_glyph_editor_perform", new ArrayList<Object>(Arrays.asList("select_datatable_size", glyph_num, datatable_name)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Set the transparency parameter in the glyph editor.
+	 * @param module
+	 * @param glyph_num glyph number (integer between 1 and 5)
+	 * @param value transparency value (integer between 1 and 100)
+	 */
+	public void glyphEditorSetTransparency(String module, int glyph_num, int value) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_glyph_editor_perform", new ArrayList<Object>(Arrays.asList("set_transparency", glyph_num, value)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+
 	
 	// for testing purpose
 	public static void main(String[] args) {
@@ -870,6 +1010,8 @@ public class NaviCell {
 		n.mydataDialogSetModules("");
 		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
 		n.mydataDialogSetSamples("");
+		
+		
 		
 //		n.drawingConfigOpen("");
 //		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
