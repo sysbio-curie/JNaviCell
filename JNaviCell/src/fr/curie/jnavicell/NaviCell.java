@@ -560,15 +560,18 @@ public class NaviCell {
 	
 
 	/**
-	 * Load data from a file and select genes (HUGO sy).
+	 * Load data from a file.
+	 * if select is true, only genes present on the map are kept. The filtering 
+	 * is done on HUGO gene symbols (hugo_list).
 	 * 
 	 * @param fileName Path to the file
+	 * @param select Boolean true: select genes preset on the map
 	 * @return NaviCell compatible string data (String)
 	 */
-	private String loadAndFilterDataFromFile(String fileName) {
+	public String loadDataFromFile(String fileName, Boolean select) {
 		
 		// get hugo gene list if it's not set
-		if (hugo_list.size() == 0)
+		if (select == true && hugo_list.size() == 0)
 			getHugoList("");
 		
 		StringBuilder sb = new StringBuilder();
@@ -576,10 +579,11 @@ public class NaviCell {
 			BufferedReader br = new BufferedReader(new FileReader(new File(fileName)));
 			String line;
 			int ct=0;
-			int count_genes = 0;
+			int count_genes=0;
+			int count_lines=0;
 			sb.append("@DATA\n");
 			while((line = br.readLine()) != null) {
-				if (ct>1) {
+				if (select == true && ct>1) {
 					String[] tokens = line.split("\\s|\\t");
 					// select genes that are present on the map
 					if (hugo_list.contains(tokens[0])) {
@@ -589,11 +593,15 @@ public class NaviCell {
 				}
 				else {
 					sb.append(line+"\n");
+					count_lines++;
 				}
 				ct++;
 			}
 			br.close();
-			System.out.println(count_genes + " genes selected.");
+			if (select == true)
+				System.out.println(count_genes + " genes selected.");
+			else
+				System.out.println(count_lines-1 + " samples selected.");
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -610,7 +618,7 @@ public class NaviCell {
 	 * @param datatableName name of the datatable.
 	 */
 	public void importData(String module, String fileName, String biotype, String datatableName) {
-		String str_data = loadAndFilterDataFromFile(fileName);
+		String str_data = loadDataFromFile(fileName, true);
 		increaseMessageID();
 		UrlEncodedFormEntity url = buildUrl(module, "nv_import_datatables", 
 				new ArrayList<Object>(Arrays.asList(biotype, datatableName, "", str_data, new JSONObject())));
@@ -619,11 +627,26 @@ public class NaviCell {
 		}
 	}
 	
+	public void importSampleAnnotation(String module, String fileName) {
+		increaseMessageID();
+		String str_data = loadDataFromFile(fileName, false);
+		UrlEncodedFormEntity url = buildUrl(module, "nv_sample_annotation_perform", 
+				new ArrayList<Object>(Arrays.asList("import", str_data)));
+		if (url != null) {
+			System.out.println(sendToServer(url));
+		}
+	}
+	
 	
 	// for testing purpose
 	public static void main(String[] args) {
 		NaviCell n = new NaviCell();
 		n.launchBrowser();
+		n.importData("", "/Users/eric/wk/RNaviCell_test/ovca_expression.txt", "mRNA Expression data", "test");
+		n.importSampleAnnotation("", "/Users/eric/wk/RNaviCell_test/ovca_sampleinfo.txt");
+		
+		//System.out.println(s);
+		
 //		n.getModules("");
 //		n.getDatatableGenes("");
 //		System.out.println(n.getDatatableGeneList());
