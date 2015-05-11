@@ -131,7 +131,6 @@ public class NaviCell {
 	
 	/**
 	 * Encode URL for NaviCell server.
-	 * 
 	 * @param module (String)
 	 * @param action (String)
 	 * @param args list of objects for the 'args' array
@@ -170,7 +169,6 @@ public class NaviCell {
 	
 	/**
 	 * Build a HttpClient object trusting any SSL certificate.
-	 * 
 	 * @return HttpClient object
 	 */
 	@SuppressWarnings("deprecation")
@@ -210,7 +208,6 @@ public class NaviCell {
 
 	/**
 	 * Send a POST request to the NaviCell server.
-	 * 
 	 * @param url
 	 * @return String server response
 	 */
@@ -233,7 +230,6 @@ public class NaviCell {
 	
 	/**
 	 * Generate a valid session ID.
-	 * 
 	 * @throws UnsupportedEncodingException
 	 */
 	private void generateSessionID() throws UnsupportedEncodingException {
@@ -267,7 +263,6 @@ public class NaviCell {
 	
 	/**
 	 * Returns true if NaviCell server is ready.
-	 * 
 	 * @return boolean
 	 */
 	public boolean serverIsReady(String module) {
@@ -319,7 +314,6 @@ public class NaviCell {
 	
 	/**
 	 * Set the zoom level on the current map.
-	 * 
 	 * @param module
 	 * @param zoomLevel
 	 */
@@ -348,7 +342,6 @@ public class NaviCell {
 
 	/**
 	 * Set the absolute position of the map center.
-	 * 
 	 * @param module
 	 * @param x x-coordinate (integer)
 	 * @param y y-coordinate (integer)
@@ -364,7 +357,6 @@ public class NaviCell {
 	
 	/**
 	 * Move the map center (relative).
-	 * 
 	 * @param module
 	 * @param x relative x-coordinate
 	 * @param y relative y-coordinate
@@ -386,7 +378,6 @@ public class NaviCell {
 
 	/**
 	 * Find and select an entity on the map.
-	 * 
 	 * @param module
 	 * @param entity entity name (String)
 	 */
@@ -401,7 +392,6 @@ public class NaviCell {
 	
 	/**
 	 * Find one or more entities on the map according to a pattern (e.g. AKT*).
-	 * 
 	 * @param module
 	 * @param pattern entity's name pattern (String)
 	 * @param bubble display the bubble (boolean)
@@ -417,7 +407,6 @@ public class NaviCell {
 	
 	/**
 	 * Uncheck all entities on the map.
-	 * 
 	 * @param module
 	 */
 	public void uncheckEntities(String module) {
@@ -431,7 +420,6 @@ public class NaviCell {
 	
 	/**
 	 * Un-highlight all entities on the map.
-	 * 
 	 * @param module
 	 */
 	public void unhighlightAllEntities(String module) {
@@ -451,7 +439,6 @@ public class NaviCell {
 	
 	/**
 	 * Get the list of the HUGO gene symbols for the current map and set the field hugo_list.
-	 * 
 	 * @param module
 	 */
 	public void getHugoList(String module) {
@@ -469,7 +456,6 @@ public class NaviCell {
 	
 	/**
 	 * get the list of NaviCell internal data types (biotypes).
-	 * 
 	 * @param module
 	 */
 	public void getBiotypes(String module) {
@@ -486,7 +472,6 @@ public class NaviCell {
 
 	/**
 	 * Get the list of modules defined on the current map.
-	 * 
 	 * @param module
 	 */
 	public void getModules(String module) {
@@ -503,7 +488,6 @@ public class NaviCell {
 
 	/**
 	 * Get the list of imported datatables.
-	 * 
 	 * @param module
 	 */
 	public void getImportedDatatables(String module) {
@@ -520,7 +504,6 @@ public class NaviCell {
 
 	/**
 	 * Get the list of samples from all imported datatables.
-	 * 
 	 * @param module
 	 */
 	public void getDatatableSamples(String module) {
@@ -537,7 +520,6 @@ public class NaviCell {
 	
 	/**
 	 * Get the list of genes from all imported datatables.
-	 * 
 	 * @param module
 	 */
 	public void getDatatableGenes(String module) {
@@ -563,7 +545,6 @@ public class NaviCell {
 	 * Load data from a file.
 	 * if select is true, only genes present on the map are kept. The filtering 
 	 * is done on HUGO gene symbols (hugo_list).
-	 * 
 	 * @param fileName Path to the file
 	 * @param select Boolean true: select genes preset on the map
 	 * @return NaviCell compatible string data (String)
@@ -611,7 +592,6 @@ public class NaviCell {
 	
 	/**
 	 * Import data into current NaviCell session.
-	 * 
 	 * @param module module name.
 	 * @param fileName file (with complete path) name.
 	 * @param biotype NaviCell data type.
@@ -627,13 +607,159 @@ public class NaviCell {
 		}
 	}
 	
+	/**
+	 * Import a sample annotation file.
+	 * @param module
+	 * @param fileName
+	 */
 	public void importSampleAnnotation(String module, String fileName) {
 		increaseMessageID();
 		String str_data = loadDataFromFile(fileName, false);
 		UrlEncodedFormEntity url = buildUrl(module, "nv_sample_annotation_perform", 
 				new ArrayList<Object>(Arrays.asList("import", str_data)));
 		if (url != null) {
-			System.out.println(sendToServer(url));
+			sendToServer(url);
+		}
+	}
+
+	/* ------------------------------------------------------------------------
+	 * Drawing Configuration Dialog functions.
+	 * ------------------------------------------------------------------------
+	 */
+	
+	/**
+	 * Open the drawing configuration dialog.
+	 * @param module
+	 */
+	public void drawingConfigOpen(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_drawing_config_perform", new ArrayList<Object>(Arrays.asList("open")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Close the drawing configuration dialog.
+	 * @param module
+	 */
+	public void drawingConfigClose(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_drawing_config_perform", new ArrayList<Object>(Arrays.asList("close")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Apply modifications for drawing configuration dialog.
+	 * @param module
+	 */
+	public void drawingConfigApply(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_drawing_config_perform", new ArrayList<Object>(Arrays.asList("apply")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Apply modifications for drawing configuration dialog and close the window.
+	 * @param module
+	 */
+	public void drawingConfigApplyAndClose(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_drawing_config_perform", new ArrayList<Object>(Arrays.asList("apply_and_close")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Cancel modifications for drawing configuration dialog.
+	 * @param module
+	 */
+	public void drawingConfigCancel(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_drawing_config_perform", new ArrayList<Object>(Arrays.asList("cancel")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Select Heatmap in drawing configuration dialog.
+	 * @param module
+	 * @param check Boolean 
+	 */
+	public void drawingConfigSelectHeatmap(String module, Boolean check) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_drawing_config_perform", new ArrayList<Object>(Arrays.asList("select_heatmap", check)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Select Barplot in drawing configuration dialog.
+	 * @param module
+	 * @param check Boolean 
+	 */
+	public void drawingConfigSelectBarplot(String module, Boolean check) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_drawing_config_perform", new ArrayList<Object>(Arrays.asList("select_barplot", check)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Select Glyph in drawing configuration dialog.
+	 * @param module
+	 * @param check Boolean 
+	 */
+	public void drawingConfigSelectGlyph(String module, Boolean check) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_drawing_config_perform", new ArrayList<Object>(Arrays.asList("select_glyph", check)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Select Map Staining in drawing configuration dialog.
+	 * @param module
+	 * @param check Boolean 
+	 */
+	public void drawingConfigSelectMapStaining(String module, Boolean check) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_drawing_config_perform", new ArrayList<Object>(Arrays.asList("select_map_staining", check)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Select 'Display all genes' option in drawing configuration dialog.
+	 * @param module
+	 */
+	public void drawingConfigSelectDisplayAllGenes(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_drawing_config_perform", new ArrayList<Object>(Arrays.asList("display_all_genes")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Select 'Display selected genes' option in drawing configuration dialog.
+	 * @param module
+	 */
+	public void drawingConfigSelectDisplaySelectedGenes(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_drawing_config_perform", new ArrayList<Object>(Arrays.asList("display_selected_genes")));
+		if (url != null) {
+			sendToServer(url);
 		}
 	}
 	
@@ -642,10 +768,10 @@ public class NaviCell {
 	public static void main(String[] args) {
 		NaviCell n = new NaviCell();
 		n.launchBrowser();
-		n.importData("", "/Users/eric/wk/RNaviCell_test/ovca_expression.txt", "mRNA Expression data", "test");
-		n.importSampleAnnotation("", "/Users/eric/wk/RNaviCell_test/ovca_sampleinfo.txt");
+		n.drawingConfigOpen("");
 		
-		//System.out.println(s);
+		//		n.importData("", "/Users/eric/wk/RNaviCell_test/ovca_expression.txt", "mRNA Expression data", "test");
+//		n.importSampleAnnotation("", "/Users/eric/wk/RNaviCell_test/ovca_sampleinfo.txt");
 		
 //		n.getModules("");
 //		n.getDatatableGenes("");
