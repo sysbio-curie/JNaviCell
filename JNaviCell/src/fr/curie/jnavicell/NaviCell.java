@@ -764,16 +764,118 @@ public class NaviCell {
 		}
 	}
 	
+	/* ------------------------------------------------------------------------
+	 * My Data Dialog functions.
+	 * ------------------------------------------------------------------------
+	 */
+	
+	/**
+	 * Open 'My Data' dialog.
+	 * @param module
+	 */
+	public void mydataDialogOpen(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_mydata_perform", new ArrayList<Object>(Arrays.asList("open")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+
+	/**
+	 * Close 'My Data' dialog.
+	 * @param module
+	 */
+	public void mydataDialogClose(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_mydata_perform", new ArrayList<Object>(Arrays.asList("close")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Set the datatables tab active for 'My Data' dialog.
+	 * @param module
+	 */
+	public void mydataDialogSetDatatables(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_mydata_perform", new ArrayList<Object>(Arrays.asList("select_datatables")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Set the Sample tab active for 'My Data' dialog.
+	 * @param module
+	 */
+	public void mydataDialogSetSamples(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_mydata_perform", new ArrayList<Object>(Arrays.asList("select_samples")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+
+	/**
+	 * Set the Gene tab active for 'My Data' dialog.
+	 * @param module
+	 */
+	public void mydataDialogSetGenes(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_mydata_perform", new ArrayList<Object>(Arrays.asList("select_genes")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Set the Groups tab active for 'My Data' dialog.
+	 * @param module
+	 */
+	public void mydataDialogSetGroups(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_mydata_perform", new ArrayList<Object>(Arrays.asList("select_groups")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Set the Module tab active for 'My Data' dialog.
+	 * @param module
+	 */
+	public void mydataDialogSetModules(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_mydata_perform", new ArrayList<Object>(Arrays.asList("select_modules")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
 	
 	// for testing purpose
 	public static void main(String[] args) {
 		NaviCell n = new NaviCell();
+		
 		n.launchBrowser();
-		n.drawingConfigOpen("");
-		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-		n.drawingConfigSelectDisplaySelectedGenes("");
-		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
-		n.drawingConfigSelectDisplayAllGenes("");		
+		n.importData("", "/Users/eric/wk/RNaviCell_test/DU145_data.txt", "mRNA Expression data", "test");
+		n.mydataDialogOpen("");
+		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+		n.mydataDialogSetGenes("");
+		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+		n.mydataDialogSetGroups("");
+		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+		n.mydataDialogSetModules("");
+		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+		n.mydataDialogSetSamples("");
+		
+//		n.drawingConfigOpen("");
+//		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+//		n.drawingConfigSelectDisplaySelectedGenes("");
+//		try {Thread.sleep(2000);} catch (InterruptedException e) {e.printStackTrace();}
+//		n.drawingConfigSelectDisplayAllGenes("");		
 		
 		//		n.importData("", "/Users/eric/wk/RNaviCell_test/ovca_expression.txt", "mRNA Expression data", "test");
 //		n.importSampleAnnotation("", "/Users/eric/wk/RNaviCell_test/ovca_sampleinfo.txt");
