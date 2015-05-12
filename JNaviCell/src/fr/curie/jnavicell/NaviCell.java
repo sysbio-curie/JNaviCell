@@ -1266,13 +1266,74 @@ public class NaviCell {
 	}
 	
 	/**
-	 * Set the transparancy parameter in the heatmap editor.
+	 * Set the transparency parameter in the heatmap editor.
 	 * @param module
 	 * @param value transparency value (integer between 1 and 100)
 	 */
 	public void heatmapEditorSetTransparency(String module, int value) {
 		increaseMessageID();
 		UrlEncodedFormEntity url = buildUrl(module, "nv_heatmap_editor_perform", new ArrayList<Object>(Arrays.asList("set_transparency", value)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/* ------------------------------------------------------------------------
+	 * Unordered discrete configuration editor functions.
+	 * ------------------------------------------------------------------------
+	 */
+	
+	public void unorderedConfigOpen(String module, String datatable_name, String datatable_parameter) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_display_unordered_discrete_config_perform", 
+				new ArrayList<Object>(Arrays.asList("open", datatable_name, datatable_parameter)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	public void unorderedConfigClose(String module, String datatable_name, String datatable_parameter) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_display_unordered_discrete_config_perform", 
+				new ArrayList<Object>(Arrays.asList("close", datatable_name, datatable_parameter)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+
+	public void unorderedConfigCancel(String module, String datatable_name, String datatable_parameter) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_display_unordered_discrete_config_perform", 
+				new ArrayList<Object>(Arrays.asList("cancel", datatable_name, datatable_parameter)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	public void unorderedConfigApply(String module, String datatable_name, String datatable_parameter) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_display_unordered_discrete_config_perform", 
+				new ArrayList<Object>(Arrays.asList("apply", datatable_name, datatable_parameter)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	public void unorderedConfigApplyAndClose(String module, String datatable_name, String datatable_parameter) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_display_unordered_discrete_config_perform", 
+				new ArrayList<Object>(Arrays.asList("apply_and_close", datatable_name, datatable_parameter)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+
+	public void unorderedConfigSetAdvancedConfig(String module, String datatable_name, String datatable_parameter, boolean check) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_display_unordered_discrete_config_perform", 
+				new ArrayList<Object>(Arrays.asList("set_advanced_configuration", datatable_name, datatable_parameter, check)));
 		if (url != null) {
 			sendToServer(url);
 		}
