@@ -1135,6 +1135,149 @@ public class NaviCell {
 		}
 	}
 	
+	/* ------------------------------------------------------------------------
+	 * Heatmap editor functions.
+	 * ------------------------------------------------------------------------
+	 */
+	
+	/**
+	 * Open the heatmap editor.
+	 * @param module
+	 */
+	public void heatmapEditorOpen(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_heatmap_editor_perform", new ArrayList<Object>(Arrays.asList("open")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Close the heatmap editor.
+	 * @param module
+	 */
+	public void heatmapEditorClose(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_heatmap_editor_perform", new ArrayList<Object>(Arrays.asList("close")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Cancel changes in the heatmap editor.
+	 * @param module
+	 */
+	public void heatmapEditorCancel(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_heatmap_editor_perform", new ArrayList<Object>(Arrays.asList("cancel")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+
+	
+	/**
+	 * Apply changes in the heatmap editor.
+	 * @param module
+	 */
+	public void heatmapEditorApply(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_heatmap_editor_perform", new ArrayList<Object>(Arrays.asList("apply")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+
+	/**
+	 * Apply changes to the heatmap editor and close the window.
+	 * @param module
+	 */
+	public void heatmapEditorApplyAndClose(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_heatmap_editor_perform", new ArrayList<Object>(Arrays.asList("apply_and_close")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Select a sample in the heatmap editor.
+	 * @param module
+	 * @param col_num column index (integer starting from 0)
+	 * @param sample_name sample name (String)
+	 */
+	public void heatmapEditorSelectSample(String module, int col_num, String sample_name) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_heatmap_editor_perform", new ArrayList<Object>(Arrays.asList("select_sample", col_num, sample_name)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Select a datatable in the heatmap editor.
+	 * @param module
+	 * @param row_num row index (starting from 0)
+	 * @param datatable_name datatable name (String)
+	 */
+	public void heatmapEditorSelectDatatable(String module, int row_num, String datatable_name) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_heatmap_editor_perform", new ArrayList<Object>(Arrays.asList("select_datatable", row_num, datatable_name)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Clear the samples in the heatmap editor.
+	 * @param module
+	 */
+	public void heatmapEditorClearSamples(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_heatmap_editor_perform", new ArrayList<Object>(Arrays.asList("clear_samples")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Select all the samples in the heatmap editor.
+	 * @param module
+	 */
+	public void heatmapEditorSelectAllSamples(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_heatmap_editor_perform", new ArrayList<Object>(Arrays.asList("all_samples")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Select all the groups in the heatmap editpr.
+	 * @param module
+	 */
+	public void heatmapEditorSelectAllGroups(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_heatmap_editor_perform", new ArrayList<Object>(Arrays.asList("all_groups")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Set the transparancy parameter in the heatmap editor.
+	 * @param module
+	 * @param value transparency value (integer between 1 and 100)
+	 */
+	public void heatmapEditorSetTransparency(String module, int value) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_heatmap_editor_perform", new ArrayList<Object>(Arrays.asList("set_transparency", value)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
 	
 	// for testing purpose
 	public static void main(String[] args) {
@@ -1142,12 +1285,11 @@ public class NaviCell {
 		
 		n.launchBrowser();
 		n.importData("", "/Users/eric/wk/RNaviCell_test/DU145_data.txt", "mRNA Expression data", "test");
-		n.barplotEditorOpen("");
-		n.barplotEditorSelectAllSamples("");;
-		n.barplotEditorSelectDatatable("", "test");
-		//n.barplotEditorClearSamples("");
-		//n.barplotEditorSetTransparency("", 50);
-		n.barplotEditorApplyAndClose("");
+		n.heatmapEditorOpen("");
+		n.heatmapEditorSelectSample("", 0,"data");
+		//n.heatmapEditorSelectDatatable("", 0, "test");
+		n.heatmapEditorClearSamples("");
+		
 		
 //		n.importData("", "/Users/eric/wk/RNaviCell_test/DU145_data.txt", "mRNA Expression data", "test");
 //		n.glyphEditorOpen("", 1);
