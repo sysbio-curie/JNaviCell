@@ -934,7 +934,7 @@ public class NaviCell {
 		increaseMessageID();
 		UrlEncodedFormEntity url = buildUrl(module, "nv_glyph_editor_perform", new ArrayList<Object>(Arrays.asList("select_sample", glyph_num, sample_name)));
 		if (url != null) {
-			sendToServer(url);
+			System.out.println(sendToServer(url));
 		}
 	}
 	
@@ -1000,16 +1000,27 @@ public class NaviCell {
 		NaviCell n = new NaviCell();
 		
 		n.launchBrowser();
+		
 		n.importData("", "/Users/eric/wk/RNaviCell_test/DU145_data.txt", "mRNA Expression data", "test");
-		n.mydataDialogOpen("");
+		n.glyphEditorOpen("", 1);
 		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-		n.mydataDialogSetGenes("");
-		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-		n.mydataDialogSetGroups("");
-		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-		n.mydataDialogSetModules("");
-		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-		n.mydataDialogSetSamples("");
+		n.glyphEditorSelectSample("", 1, "data");
+		n.glyphEditorSelectColorDatatable("", 1, "test");
+		n.glyphEditorSelectSizeDatatable("", 1, "test");
+		n.glyphEditorSelectShapeDatatable("", 1, "test");
+		n.glyphEditorSetTransparency("", 1, 50);
+		n.glyphEditorApply("", 1);
+		
+//		n.importData("", "/Users/eric/wk/RNaviCell_test/DU145_data.txt", "mRNA Expression data", "test");
+//		n.mydataDialogOpen("");
+//		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+//		n.mydataDialogSetGenes("");
+//		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+//		n.mydataDialogSetGroups("");
+//		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+//		n.mydataDialogSetModules("");
+//		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+//		n.mydataDialogSetSamples("");
 		
 		
 		
