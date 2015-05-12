@@ -994,22 +994,170 @@ public class NaviCell {
 		}
 	}
 
+	/* ------------------------------------------------------------------------
+	 * Barplot editor functions.
+	 * ------------------------------------------------------------------------
+	 */
+	
+	/**
+	 * Open the barplot editor.
+	 * @param module
+	 */
+	public void barplotEditorOpen(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_barplot_editor_perform", new ArrayList<Object>(Arrays.asList("open")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Close the barplot editor.
+	 * @param module
+	 */
+	public void barplotEditorClose(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_barplot_editor_perform", new ArrayList<Object>(Arrays.asList("close")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Apply changes to the barplot editor.
+	 * @param module
+	 */
+	public void barplotEditorApply(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_barplot_editor_perform", new ArrayList<Object>(Arrays.asList("apply")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Apply changes and close the barplot editor.
+	 * @param module
+	 */
+	public void barplotEditorApplyAndClose(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_barplot_editor_perform", new ArrayList<Object>(Arrays.asList("apply_and_close")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Cancel changes in the barplot editor.
+	 * @param module
+	 */
+	public void barplotEditorCancel(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_barplot_editor_perform", new ArrayList<Object>(Arrays.asList("cancel")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Select a sample or group in the barplot editor.
+	 * @param module
+	 * @param col_num
+	 * @param sample_name
+	 */
+	public void barplotEditorSelectSample(String module, int col_num, String sample_name) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_barplot_editor_perform", new ArrayList<Object>(Arrays.asList("select_sample", col_num, sample_name)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Select a datatable in the barplot editor.
+	 * @param module
+	 * @param datatable_name
+	 */
+	public void barplotEditorSelectDatatable(String module, String datatable_name) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_barplot_editor_perform", new ArrayList<Object>(Arrays.asList("select_datatable", datatable_name)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Clear all samples in the barplot editor.
+	 * @param module
+	 */
+	public void barplotEditorClearSamples(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_barplot_editor_perform", new ArrayList<Object>(Arrays.asList("clear_samples")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Select all samples in the barplot editor.
+	 * @param module
+	 */
+	public void barplotEditorSelectAllSamples(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_barplot_editor_perform", new ArrayList<Object>(Arrays.asList("all_samples")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Select all groups in the barplot editor.
+	 * @param module
+	 */
+	public void barplotEditorSelectAllGroups(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_barplot_editor_perform", new ArrayList<Object>(Arrays.asList("all_groups")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Set the transparency parameter in the barplot editor. 
+	 * @param module
+	 * @param value transparency value (integer between 1 and 100)
+	 */
+	public void barplotEditorSetTransparency(String module, int value) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_barplot_editor_perform", new ArrayList<Object>(Arrays.asList("set_transparency", value)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
 	
 	// for testing purpose
 	public static void main(String[] args) {
 		NaviCell n = new NaviCell();
 		
 		n.launchBrowser();
-		
 		n.importData("", "/Users/eric/wk/RNaviCell_test/DU145_data.txt", "mRNA Expression data", "test");
-		n.glyphEditorOpen("", 1);
-		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
-		n.glyphEditorSelectSample("", 1, "data");
-		n.glyphEditorSelectColorDatatable("", 1, "test");
-		n.glyphEditorSelectSizeDatatable("", 1, "test");
-		n.glyphEditorSelectShapeDatatable("", 1, "test");
-		n.glyphEditorSetTransparency("", 1, 50);
-		n.glyphEditorApply("", 1);
+		n.barplotEditorOpen("");
+		n.barplotEditorSelectAllSamples("");;
+		n.barplotEditorSelectDatatable("", "test");
+		//n.barplotEditorClearSamples("");
+		//n.barplotEditorSetTransparency("", 50);
+		n.barplotEditorApplyAndClose("");
+		
+//		n.importData("", "/Users/eric/wk/RNaviCell_test/DU145_data.txt", "mRNA Expression data", "test");
+//		n.glyphEditorOpen("", 1);
+//		try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+//		n.glyphEditorSelectSample("", 1, "data");
+//		n.glyphEditorSelectColorDatatable("", 1, "test");
+//		n.glyphEditorSelectSizeDatatable("", 1, "test");
+//		n.glyphEditorSelectShapeDatatable("", 1, "test");
+//		n.glyphEditorSetTransparency("", 1, 50);
+//		n.glyphEditorApply("", 1);
 		
 //		n.importData("", "/Users/eric/wk/RNaviCell_test/DU145_data.txt", "mRNA Expression data", "test");
 //		n.mydataDialogOpen("");
