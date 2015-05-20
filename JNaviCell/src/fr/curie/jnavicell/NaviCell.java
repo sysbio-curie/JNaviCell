@@ -1499,6 +1499,251 @@ public class NaviCell {
 		}
 	}
 	
+	/* ------------------------------------------------------------------------
+	 * Continuous configuration editor functions.
+	 * ------------------------------------------------------------------------
+	 */
+	
+	/**
+	 * Open continuous configuration editor for a given type of parameter.
+	 * @param module
+	 * @param datatable_name
+	 * @param datatable_parameter string 'shape' or 'color' or 'size'
+	 */
+	public void continuousConfigOpen(String module, String datatable_name, String datatable_parameter) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_display_continuous_config_perform", 
+				new ArrayList<Object>(Arrays.asList("open", datatable_name, datatable_parameter)));
+		if (url != null) {
+			System.out.println(sendToServer(url));
+		}
+	}
+
+	/**
+	 * Close the continuous configuration editor.
+	 * @param module
+	 * @param datatable_name
+	 * @param datatable_parameter string 'shape' or 'color' or 'size'
+	 */
+	public void continuousConfigClose(String module, String datatable_name, String datatable_parameter) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_display_continuous_config_perform", 
+				new ArrayList<Object>(Arrays.asList("close", datatable_name, datatable_parameter)));
+		if (url != null) {
+			System.out.println(sendToServer(url));
+		}
+	}
+	
+	/**
+	 * Cancel changes made in the continuous configuration editor.
+	 * @param module
+	 * @param datatable_name
+	 * @param datatable_parameter  string 'shape' or 'color' or 'size'
+	 */
+	public void continuousConfigCancel(String module, String datatable_name, String datatable_parameter) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_display_continuous_config_perform", 
+				new ArrayList<Object>(Arrays.asList("cancel", datatable_name, datatable_parameter)));
+		if (url != null) {
+			System.out.println(sendToServer(url));
+		}
+	}
+	
+	/**
+	 * Apply changes made to the continuous configuration editor.
+	 * @param module
+	 * @param datatable_name
+	 * @param datatable_parameter  string 'shape' or 'color' or 'size'
+	 */
+	public void continuousConfigApply(String module, String datatable_name, String datatable_parameter) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_display_continuous_config_perform", 
+				new ArrayList<Object>(Arrays.asList("apply", datatable_name, datatable_parameter)));
+		if (url != null) {
+			System.out.println(sendToServer(url));
+		}
+	}
+	
+	/**
+	 * Apply changes and close the continuous configuration editor.
+	 * @param module
+	 * @param datatable_name
+	 * @param datatable_parameter
+	 */
+	public void continuousConfigApplyAndClose(String module, String datatable_name, String datatable_parameter) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_display_continuous_config_perform", 
+				new ArrayList<Object>(Arrays.asList("apply_and_close", datatable_name, datatable_parameter)));
+		if (url != null) {
+			System.out.println(sendToServer(url));
+		}
+	}
+	
+	/**
+	 * Set absolute value mode for continuous configuration editor for a given type of parameter.
+	 * @param module
+	 * @param datatable_parameter 'shape' or 'color' or 'size'
+	 * @param datatable_name
+	 * @param check boolean true or false
+	 */
+	public void continuousConfigSetAbsVal(String module, String datatable_parameter, String datatable_name, boolean check) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_display_continuous_config_perform", 
+				new ArrayList<Object>(Arrays.asList("set_sample_absval", datatable_parameter, datatable_name, check)));
+		if (url != null) {
+			System.out.println(sendToServer(url));
+		}
+	}
+	
+	/**
+	 * Set the method used when multiple symbols map to the same entity. 
+	 * @param module
+	 * @param datatable_parameter 'shape' or 'color' or 'size'
+	 * @param datatable_name
+	 * @param method_index integer value
+	 */
+	public void continuousConfigSetSampleMethod(String module, String datatable_parameter, String datatable_name, int method_index) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_display_continuous_config_perform", 
+				new ArrayList<Object>(Arrays.asList("set_sample_method", datatable_parameter, datatable_name, method_index)));
+		if (url != null) {
+			System.out.println(sendToServer(url));
+		}
+	}
+
+	/**
+	 * Set the method used when multiple symbols map to the same entity. 
+	 * @param module
+	 * @param datatable_parameter 'shape' or 'color' or 'size'
+	 * @param datatable_name
+	 * @param method_index integer value
+	 */
+	public void continuousConfigSetGroupMethod(String module, String datatable_parameter, String datatable_name, int method_index) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_display_continuous_config_perform", 
+				new ArrayList<Object>(Arrays.asList("set_group_method", datatable_parameter, datatable_name, method_index)));
+		if (url != null) {
+			System.out.println(sendToServer(url));
+		}
+	}
+	
+	/**
+	 * Set the size selection to a given value for the 'size' parameter. 
+	 * @param module
+	 * @param datatable_name
+	 * @param sample_or_group string 'sample' or 'group'
+	 * @param index integer value
+	 * @param size integer value
+	 */
+	public void continuousConfigSetSelectionSize(String module, String datatable_name, String sample_or_group, int index, int size) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_display_continuous_config_perform", 
+				new ArrayList<Object>(Arrays.asList("set_select_size", datatable_name, "size", sample_or_group, index, size)));
+		if (url != null) {
+			System.out.println(sendToServer(url));
+		}
+	}
+	
+	/**
+	 * Set the shape selection to a given value for the 'shape' parameter. 
+	 * @param module
+	 * @param datatable_name
+	 * @param sample_or_group string 'sample' or 'group'
+	 * @param index integer value
+	 * @param shape integer value
+	 */
+	public void continuousConfigSetSelectionShape(String module, String datatable_name, String sample_or_group, int index, int shape) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_display_continuous_config_perform", 
+				new ArrayList<Object>(Arrays.asList("set_select_shape", datatable_name, "shape", sample_or_group, index, shape)));
+		if (url != null) {
+			System.out.println(sendToServer(url));
+		}
+	}
+	
+	/**
+	 * Switch continuous configuration editor window to 'group' tab.
+	 * @param module
+	 * @param datatable_name
+	 * @param datatable_parameter 'shape' or 'color' or 'size'
+	 */
+	public void continuousConfigSwitchGroupTab(String module, String datatable_name, String datatable_parameter) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_display_continuous_config_perform", 
+				new ArrayList<Object>(Arrays.asList("switch_group_tab", datatable_name, datatable_parameter)));
+		if (url != null) {
+			System.out.println(sendToServer(url));
+		}
+	}
+	
+	/**
+	 * Switch continuous configuration editor window to 'sample' tab.
+	 * @param module
+	 * @param datatable_name
+	 * @param datatable_parameter 'shape' or 'color' or 'size'
+	 */
+	public void continuousConfigSwitchSampleTab(String module, String datatable_name, String datatable_parameter) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_display_continuous_config_perform", 
+				new ArrayList<Object>(Arrays.asList("switch_sample_tab", datatable_name, datatable_parameter)));
+		if (url != null) {
+			System.out.println(sendToServer(url));
+		}
+	}
+	
+	/**
+	 * Set continuous configuration step count parameter to a given value.
+	 * @param module
+	 * @param sample_or_group string 'sample' or 'group'
+	 * @param datatable_parameter
+	 * @param datatable_name
+	 * @param step_count integer value
+	 */
+	public void continuousConfigSetStepCount(String module, String sample_or_group, String datatable_parameter, String datatable_name,  int step_count) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_display_continuous_config_perform", 
+				new ArrayList<Object>(Arrays.asList("step_count_change", sample_or_group, datatable_parameter, datatable_name, step_count)));
+		if (url != null) {
+			System.out.println(sendToServer(url));
+		}
+	}
+	
+	/**
+	 * Set continuous configuration color value.
+	 * @param module
+	 * @param datatable_name
+	 * @param sample_or_group string 'sample or 'group'
+	 * @param index integer value
+	 * @param color_hex_value string for the color code e.g. 'FFDD00'
+	 */
+	public void continuousConfigSetColorAt(String module, String datatable_name, String sample_or_group, int index, String color_hex_value) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_display_continuous_config_perform", 
+				new ArrayList<Object>(Arrays.asList("set_input_color", datatable_name, sample_or_group, index, color_hex_value)));
+		if (url != null) {
+			System.out.println(sendToServer(url));
+		}
+	}
+	
+	/**
+	 * Set continuous configuration value at a given index.
+	 * @param module
+	 * @param datatable_name
+	 * @param datatable_parameter string 'size' or 'shape' or 'color'
+	 * @param sample_or_group string 'sample' or 'group'
+	 * @param index integer value
+	 * @param continuous_value double value
+	 */
+	public void continuousConfigSetValueAt(String module, String datatable_name, String datatable_parameter, String sample_or_group, int index, double continuous_value) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_display_continuous_config_perform", 
+				new ArrayList<Object>(Arrays.asList("set_input_value", datatable_name, datatable_parameter, sample_or_group, index, continuous_value)));
+		if (url != null) {
+			System.out.println(sendToServer(url));
+		}
+	}
+	
+	
 	
 	
 	// for testing purpose
@@ -1506,11 +1751,12 @@ public class NaviCell {
 		NaviCell n = new NaviCell();
 		
 		n.launchBrowser();
-		n.importData("", "/Users/eric/wk/RNaviCell_test/DU145_mut.txt", "Mutation data", "test");
+		//n.importData("", "/Users/eric/wk/RNaviCell_test/DU145_mut.txt", "Mutation data", "test");
 		//n.importData("", "/Users/eric/wk/RNaviCell_test/DU145_CN.txt", "Discrete Copy number data", "test");
+		n.importData("", "/Users/eric/wk/RNaviCell_test/DU145_data.txt", "mRNA Expression data", "test");
 		//n.importData("", "/Users/eric/wk/RNaviCell_test/ovca_copynumber.txt", "Discrete Copy number data", "test");
 		
-		n.unorderedConfigOpen("", "test", "size");
+		n.continuousConfigOpen("", "test", "color");
 		
 //		try {
 //			Thread.sleep(1000);
@@ -1518,8 +1764,6 @@ public class NaviCell {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-		
-		n.unorderedConfigSetDiscreteValue("", "test", "size", "sample", 0, 8);
 		
 //		n.importData("", "/Users/eric/wk/RNaviCell_test/DU145_data.txt", "mRNA Expression data", "test");
 //		n.heatmapEditorOpen("");
