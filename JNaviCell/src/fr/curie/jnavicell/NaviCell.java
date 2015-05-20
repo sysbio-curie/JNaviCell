@@ -1340,6 +1340,79 @@ public class NaviCell {
 	}
 	
 	
+	public void unorderedConfigSetDiscreteValue(String module, String datatable_name, String datatable_parameter, 
+			String sample_or_group, int index, double value) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_display_unordered_discrete_config_perform", 
+				new ArrayList<Object>(Arrays.asList("set_discrete_value", datatable_name, datatable_parameter, 
+						sample_or_group, index, value)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	public void unorderedConfigSetDiscreteColor(String module, String datatable_name, String sample_or_group, int index, String color) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_display_unordered_discrete_config_perform", 
+				new ArrayList<Object>(Arrays.asList("set_discrete_color", datatable_name, "color",
+						sample_or_group, index, color)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	public void unorderedConfigSetDiscreteSize(String module, String datatable_name, String sample_or_group, int index, int size) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_display_unordered_discrete_config_perform", 
+				new ArrayList<Object>(Arrays.asList("set_discrete_size", datatable_name, "size",
+						sample_or_group, index, size)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+
+	public void unorderedConfigSetDiscreteShape(String module, String datatable_name, String sample_or_group, int index, int shape) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_display_unordered_discrete_config_perform", 
+				new ArrayList<Object>(Arrays.asList("set_discrete_shape", datatable_name, "shape",
+						sample_or_group, index, shape)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	public void unorderedConfigSetDiscreteCondition(String module, String datatable_name, String datatable_parameter, 
+			String sample_or_group, int index, int condition) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_display_unordered_discrete_config_perform", 
+				new ArrayList<Object>(Arrays.asList("set_discrete_cond", datatable_name, datatable_parameter, sample_or_group, index, condition)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	public void unorderedConfigSwitchSampleTab(String module, String datatable_name, String datatable_parameter) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_display_unordered_discrete_config_perform", 
+				new ArrayList<Object>(Arrays.asList("switch_sample_tab", datatable_name, datatable_parameter)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+
+	public void unorderedConfigSwitchGroupTab(String module, String datatable_name, String datatable_parameter) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_display_unordered_discrete_config_perform", 
+				new ArrayList<Object>(Arrays.asList("switch_group_tab", datatable_name, datatable_parameter)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	
+	
 	// for testing purpose
 	public static void main(String[] args) {
 		NaviCell n = new NaviCell();
