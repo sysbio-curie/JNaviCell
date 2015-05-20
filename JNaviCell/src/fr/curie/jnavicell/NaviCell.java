@@ -1299,10 +1299,10 @@ public class NaviCell {
 	}
 	
 	/**
-	 * 
+	 * Open unordered discrete configuration editor for a given type of parameter. 
 	 * @param module
 	 * @param datatable_name
-	 * @param datatable_parameter
+	 * @param datatable_parameter String, either 'shape' or 'color' or 'size'.
 	 */
 	public void unorderedConfigClose(String module, String datatable_name, String datatable_parameter) {
 		increaseMessageID();
@@ -1314,6 +1314,12 @@ public class NaviCell {
 	}
 	
 
+	/**
+	 * Cancel changes for unordered discrete configuration editor for a given type of parameter.
+	 * @param module
+	 * @param datatable_name
+	 * @param datatable_parameter String, either 'shape' or 'color' or 'size'.
+	 */
 	public void unorderedConfigCancel(String module, String datatable_name, String datatable_parameter) {
 		increaseMessageID();
 		UrlEncodedFormEntity url = buildUrl(module, "nv_display_unordered_discrete_config_perform", 
@@ -1323,15 +1329,27 @@ public class NaviCell {
 		}
 	}
 	
+	/**
+	 * Apply changes to unordered discrete configuration editor for a given type of parameter.
+	 * @param module
+	 * @param datatable_name
+	 * @param datatable_parameter String, either 'shape' or 'color' or 'size'.
+	 */
 	public void unorderedConfigApply(String module, String datatable_name, String datatable_parameter) {
 		increaseMessageID();
 		UrlEncodedFormEntity url = buildUrl(module, "nv_display_unordered_discrete_config_perform", 
 				new ArrayList<Object>(Arrays.asList("apply", datatable_name, datatable_parameter)));
 		if (url != null) {
-			System.out.println(sendToServer(url));
+			sendToServer(url);
 		}
 	}
 	
+	/**
+	 * Apply changes to unordered discrete configuration editor for a given type of parameter, and close the window. 
+	 * @param module
+	 * @param datatable_name
+	 * @param datatable_parameter String, either 'shape' or 'color' or 'size'.
+	 */
 	public void unorderedConfigApplyAndClose(String module, String datatable_name, String datatable_parameter) {
 		increaseMessageID();
 		UrlEncodedFormEntity url = buildUrl(module, "nv_display_unordered_discrete_config_perform", 
@@ -1341,7 +1359,13 @@ public class NaviCell {
 		}
 	}
 	
-
+	/**
+	 * Open/close advanced configuration for unordered discrete configuration editor for a given type of parameter.
+	 * @param module
+	 * @param datatable_name
+	 * @param datatable_parameter
+	 * @param check
+	 */
 	public void unorderedConfigSetAdvancedConfig(String module, String datatable_name, String datatable_parameter, boolean check) {
 		increaseMessageID();
 		UrlEncodedFormEntity url = buildUrl(module, "nv_display_unordered_discrete_config_perform", 
@@ -1351,28 +1375,52 @@ public class NaviCell {
 		}
 	}
 	
-	
+	/**
+	 * "Set discrete value for unordered discrete configuration editor for a given type of parameter.
+	 * @param module
+	 * @param datatable_name
+	 * @param datatable_parameter A string, 'shape' or 'color' or 'size'
+	 * @param sample_or_group A string, either 'sample' or 'group'
+	 * @param index integer value
+	 * @param value double value
+	 */
 	public void unorderedConfigSetDiscreteValue(String module, String datatable_name, String datatable_parameter, 
-			String sample_or_group, int index, int value) {
+			String sample_or_group, int index, double value) {
 		increaseMessageID();
 		UrlEncodedFormEntity url = buildUrl(module, "nv_display_unordered_discrete_config_perform", 
 				new ArrayList<Object>(Arrays.asList("set_discrete_value", datatable_name, datatable_parameter, 
 						sample_or_group, index, value)));
 		if (url != null) {
-			System.out.println(sendToServer(url));
+			sendToServer(url);
 		}
 	}
 	
+	/**
+	 * Set color value for unordered discrete configuration editor.
+	 * @param module
+	 * @param datatable_name
+	 * @param sample_or_group string 'sample' or 'group'
+	 * @param index integer value
+	 * @param color string hex code color value, e.g. 'FF0000'
+	 */
 	public void unorderedConfigSetDiscreteColor(String module, String datatable_name, String sample_or_group, int index, String color) {
 		increaseMessageID();
 		UrlEncodedFormEntity url = buildUrl(module, "nv_display_unordered_discrete_config_perform", 
 				new ArrayList<Object>(Arrays.asList("set_discrete_color", datatable_name, "color",
 						sample_or_group, index, color)));
 		if (url != null) {
-			System.out.println(sendToServer(url));
+			sendToServer(url);
 		}
 	}
 	
+	/**
+	 * Set size value for unordered discrete configuration editor. 
+	 * @param module
+	 * @param datatable_name
+	 * @param sample_or_group string 'sample' or 'group'
+	 * @param index integer value
+	 * @param size integer value
+	 */
 	public void unorderedConfigSetDiscreteSize(String module, String datatable_name, String sample_or_group, int index, int size) {
 		increaseMessageID();
 		UrlEncodedFormEntity url = buildUrl(module, "nv_display_unordered_discrete_config_perform", 
@@ -1383,7 +1431,14 @@ public class NaviCell {
 		}
 	}
 	
-
+	/**
+	 * Set shape value for unordered discrete configuration editor.
+	 * @param module
+	 * @param datatable_name
+	 * @param sample_or_group string 'sample' or 'group'
+	 * @param index integer value
+	 * @param shape integer value
+	 */
 	public void unorderedConfigSetDiscreteShape(String module, String datatable_name, String sample_or_group, int index, int shape) {
 		increaseMessageID();
 		UrlEncodedFormEntity url = buildUrl(module, "nv_display_unordered_discrete_config_perform", 
@@ -1394,6 +1449,15 @@ public class NaviCell {
 		}
 	}
 	
+	/**
+	 * Set condition value for unordered discrete configuration editor.
+	 * @param module
+	 * @param datatable_name
+	 * @param datatable_parameter 'size' or 'shape' or 'color'
+	 * @param sample_or_group 'sample' or 'group'
+	 * @param index integer value
+	 * @param condition integer value
+	 */
 	public void unorderedConfigSetDiscreteCondition(String module, String datatable_name, String datatable_parameter, 
 			String sample_or_group, int index, int condition) {
 		increaseMessageID();
@@ -1404,6 +1468,12 @@ public class NaviCell {
 		}
 	}
 	
+	/**
+	 * Switch to sample tab for unordered discrete configuration editor.
+	 * @param module
+	 * @param datatable_name
+	 * @param datatable_parameter string 'size' or 'shape' or 'color'.
+	 */
 	public void unorderedConfigSwitchSampleTab(String module, String datatable_name, String datatable_parameter) {
 		increaseMessageID();
 		UrlEncodedFormEntity url = buildUrl(module, "nv_display_unordered_discrete_config_perform", 
@@ -1414,6 +1484,12 @@ public class NaviCell {
 	}
 	
 
+	/**
+	 * Switch to group tab for unordered discrete configuration editor. 
+	 * @param module
+	 * @param datatable_name
+	 * @param datatable_parameter string, 'size' or 'shape' or 'color'
+	 */
 	public void unorderedConfigSwitchGroupTab(String module, String datatable_name, String datatable_parameter) {
 		increaseMessageID();
 		UrlEncodedFormEntity url = buildUrl(module, "nv_display_unordered_discrete_config_perform", 
@@ -1430,9 +1506,9 @@ public class NaviCell {
 		NaviCell n = new NaviCell();
 		
 		n.launchBrowser();
-		//n.importData("", "/Users/eric/wk/RNaviCell_test/DU145_mut.txt", "Mutation data", "test");
+		n.importData("", "/Users/eric/wk/RNaviCell_test/DU145_mut.txt", "Mutation data", "test");
 		//n.importData("", "/Users/eric/wk/RNaviCell_test/DU145_CN.txt", "Discrete Copy number data", "test");
-		n.importData("", "/Users/eric/wk/RNaviCell_test/ovca_copynumber.txt", "Discrete Copy number data", "test");
+		//n.importData("", "/Users/eric/wk/RNaviCell_test/ovca_copynumber.txt", "Discrete Copy number data", "test");
 		
 		n.unorderedConfigOpen("", "test", "size");
 		
@@ -1443,7 +1519,7 @@ public class NaviCell {
 //			e.printStackTrace();
 //		}
 		
-		n.unorderedConfigSetDiscreteValue("", "test", "size", "sample", 0, 1);
+		n.unorderedConfigSetDiscreteValue("", "test", "size", "sample", 0, 8);
 		
 //		n.importData("", "/Users/eric/wk/RNaviCell_test/DU145_data.txt", "mRNA Expression data", "test");
 //		n.heatmapEditorOpen("");
