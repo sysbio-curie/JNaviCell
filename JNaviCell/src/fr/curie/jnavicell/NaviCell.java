@@ -1283,6 +1283,12 @@ public class NaviCell {
 	 * ------------------------------------------------------------------------
 	 */
 	
+	/**
+	 * Open unordered discrete configuration editor for a given type of parameter.
+	 * @param module
+	 * @param datatable_name
+	 * @param datatable_parameter String, either 'shape' or 'color' or 'size'.
+	 */
 	public void unorderedConfigOpen(String module, String datatable_name, String datatable_parameter) {
 		increaseMessageID();
 		UrlEncodedFormEntity url = buildUrl(module, "nv_display_unordered_discrete_config_perform", 
@@ -1292,6 +1298,12 @@ public class NaviCell {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param module
+	 * @param datatable_name
+	 * @param datatable_parameter
+	 */
 	public void unorderedConfigClose(String module, String datatable_name, String datatable_parameter) {
 		increaseMessageID();
 		UrlEncodedFormEntity url = buildUrl(module, "nv_display_unordered_discrete_config_perform", 
@@ -1316,7 +1328,7 @@ public class NaviCell {
 		UrlEncodedFormEntity url = buildUrl(module, "nv_display_unordered_discrete_config_perform", 
 				new ArrayList<Object>(Arrays.asList("apply", datatable_name, datatable_parameter)));
 		if (url != null) {
-			sendToServer(url);
+			System.out.println(sendToServer(url));
 		}
 	}
 	
@@ -1341,13 +1353,13 @@ public class NaviCell {
 	
 	
 	public void unorderedConfigSetDiscreteValue(String module, String datatable_name, String datatable_parameter, 
-			String sample_or_group, int index, double value) {
+			String sample_or_group, int index, int value) {
 		increaseMessageID();
 		UrlEncodedFormEntity url = buildUrl(module, "nv_display_unordered_discrete_config_perform", 
 				new ArrayList<Object>(Arrays.asList("set_discrete_value", datatable_name, datatable_parameter, 
 						sample_or_group, index, value)));
 		if (url != null) {
-			sendToServer(url);
+			System.out.println(sendToServer(url));
 		}
 	}
 	
@@ -1357,7 +1369,7 @@ public class NaviCell {
 				new ArrayList<Object>(Arrays.asList("set_discrete_color", datatable_name, "color",
 						sample_or_group, index, color)));
 		if (url != null) {
-			sendToServer(url);
+			System.out.println(sendToServer(url));
 		}
 	}
 	
@@ -1418,11 +1430,26 @@ public class NaviCell {
 		NaviCell n = new NaviCell();
 		
 		n.launchBrowser();
-		n.importData("", "/Users/eric/wk/RNaviCell_test/DU145_data.txt", "mRNA Expression data", "test");
-		n.heatmapEditorOpen("");
-		n.heatmapEditorSelectSample("", 0,"data");
-		//n.heatmapEditorSelectDatatable("", 0, "test");
-		n.heatmapEditorClearSamples("");
+		//n.importData("", "/Users/eric/wk/RNaviCell_test/DU145_mut.txt", "Mutation data", "test");
+		//n.importData("", "/Users/eric/wk/RNaviCell_test/DU145_CN.txt", "Discrete Copy number data", "test");
+		n.importData("", "/Users/eric/wk/RNaviCell_test/ovca_copynumber.txt", "Discrete Copy number data", "test");
+		
+		n.unorderedConfigOpen("", "test", "size");
+		
+//		try {
+//			Thread.sleep(1000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+		n.unorderedConfigSetDiscreteValue("", "test", "size", "sample", 0, 1);
+		
+//		n.importData("", "/Users/eric/wk/RNaviCell_test/DU145_data.txt", "mRNA Expression data", "test");
+//		n.heatmapEditorOpen("");
+//		n.heatmapEditorSelectSample("", 0,"data");
+//		//n.heatmapEditorSelectDatatable("", 0, "test");
+//		n.heatmapEditorClearSamples("");
 		
 		
 //		n.importData("", "/Users/eric/wk/RNaviCell_test/DU145_data.txt", "mRNA Expression data", "test");
