@@ -1,29 +1,20 @@
 package fr.curie.jnavicell;
 
-import java.awt.List;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Set;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.ParseException;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
@@ -54,16 +45,56 @@ import org.json.simple.parser.JSONParser;
 @SuppressWarnings("unchecked")
 public class NaviCell {
 
+	/**
+	 * URL of the NaviCell map
+	 */
 	private String map_url = "https://navicell.curie.fr/navicell/maps/cellcycle/master/index.php";
+	
+	/**
+	 * NaviCell proxy URL
+	 */
 	private String proxy_url = "https://navicell.curie.fr/cgi-bin/nv_proxy.php";
+	
+	/**
+	 * Simple counter for message IDs
+	 */
 	private int msg_id = 1000;
+	
+	/**
+	 * List of all the gene symbols (HUGO) contained in the NaviCell map.
+	 */
 	private Set<String> hugo_list = new HashSet<String>();
+	
+	/**
+	 * List of NaviCell biotypes (JSONArray object)
+	 */
 	private JSONArray biotype_list;
+	
+	/**
+	 * List of all modules contained in the NaviCell map (JSONArray object).
+	 */
 	private JSONArray module_list;
+	
+	/**
+	 * List of all datatables currently loaded in the NaviCell session (JSONArray object)..
+	 */
 	private JSONArray datatable_list;
+	
+	/**
+	 * List of all samples loaded in the current NaviCell session (JSONArray object).
+	 */
 	private JSONArray datatable_sample_list; 
+	
+	/**
+	 * List of all the genes contained in the datatables loaded in the current NaviCell session (JSONArray object).
+	 */
 	private JSONArray datatable_gene_list;
+	
+	/**
+	 * NaviCell session ID.
+	 */
 	private String session_id = "";
+	
 	
 	/**
 	 * Constructor
@@ -81,42 +112,82 @@ public class NaviCell {
 		map_url = url;
 	}
 	
+	/**
+	 * Set the proxy URL.
+	 * @param url
+	 */
 	public void setProxyUrl (String url) {
 		proxy_url = url;
 	}
 	
+	/**
+	 * Get the list of gene symbols (HUGO).
+	 * @return set
+	 */
 	public Set<String> getHugoList() {
 		return(hugo_list);
 	}
 
+	/**
+	 * Get the list of biotypes.
+	 * @return JSONArray
+	 */
 	public JSONArray getBiotypeList() {
 		return(biotype_list);
 	}
 	
+	/**
+	 * Get the list of modules.
+	 * @return JSONArray
+	 */
 	public JSONArray getModuleList() {
 		return(module_list);
 	}
 
+	/**
+	 * Get the list of datatables.
+	 * @return JSONArray
+	 */
 	public JSONArray getDatatableList() {
 		return(datatable_list);
 	}
 
+	/**
+	 * Get the list of all datatables samples.
+	 * @return JSONArray
+	 */
 	public JSONArray getDatatableSampleList() {
 		return(datatable_sample_list);
 	}
 
+	/**
+	 * Get the list of all datatables genes.
+	 * @return JSONArray
+	 */
 	public JSONArray getDatatableGeneList() {
 		return(datatable_gene_list);
 	}
 
+	/**
+	 * Get map URL.
+	 * @return string
+	 */
 	public String getMapUrl() {
 		return(map_url);
 	}
 	
+	/**
+	 * Get proxy URL
+	 * @return string
+	 */
 	public String getProxyUrl() {
 		return(proxy_url);
 	}
 	
+	/**
+	 * Get the session ID
+	 * @return string
+	 */
 	public String getSessionId () {
 		return(session_id);
 	}
@@ -246,10 +317,17 @@ public class NaviCell {
 		session_id = ID;
 	}
 	
+	/**
+	 * Increase message ID value.
+	 */
 	private void increaseMessageID() {
 		msg_id++;
 	}
 	
+	/**
+	 * Wait for NaviCell server to be ready.
+	 * @param module
+	 */
 	private void waitForReady(String module) {
 		while (serverIsReady(module) == false) {
 			try {
@@ -1278,6 +1356,112 @@ public class NaviCell {
 		}
 	}
 	
+	
+	/* ------------------------------------------------------------------------
+	 * Map staining editor functions.
+	 * ------------------------------------------------------------------------
+	 */
+
+	
+	/**
+	 * Open the map staining editor.
+	 * @param module
+	 */
+	public void mapStainingEditorOpen(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_map_staining_editor_perform", new ArrayList<Object>(Arrays.asList("open")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Close the map staining editor.
+	 * @param module
+	 */
+	public void mapStainingEditorClose(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_map_staining_editor_perform", new ArrayList<Object>(Arrays.asList("close")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Cancel changes in map editor. 
+	 * @param module
+	 */
+	public void mapStainingEditorCancel(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_map_staining_editor_perform", new ArrayList<Object>(Arrays.asList("cancel")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Apply changes to the map editor.
+	 * @param module
+	 */
+	public void mapStainingEditorApply(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_map_staining_editor_perform", new ArrayList<Object>(Arrays.asList("apply")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Apply changes and the map staining editor window.
+	 * @param module
+	 */
+	public void mapStainingEditorApplyAndClose(String module) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_map_staining_editor_perform", new ArrayList<Object>(Arrays.asList("apply_and_close")));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Select a datatable in the map editor window.
+	 * @param module
+	 * @param datatable_name
+	 */
+	public void mapStainingEditorSelectDatatable(String module, String datatable_name) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_map_staining_editor_perform", new ArrayList<Object>(Arrays.asList("select_datatable", datatable_name)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Select a sample in the map staining editor.
+	 * @param module
+	 * @param sample_name
+	 */
+	public void mapStainingEditorSelectSample(String module, String sample_name) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_map_staining_editor_perform", new ArrayList<Object>(Arrays.asList("select_sample", sample_name)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
+	/**
+	 * Set the transparency parameter in the map staining editor.
+	 * @param module
+	 * @param transparency_value integer value between 1 and 100
+	 */
+	public void mapStainingEditorSetTransparency(String module, int transparency_value) {
+		increaseMessageID();
+		UrlEncodedFormEntity url = buildUrl(module, "nv_map_staining_editor_perform", new ArrayList<Object>(Arrays.asList("set_transparency", transparency_value)));
+		if (url != null) {
+			sendToServer(url);
+		}
+	}
+	
 	/* ------------------------------------------------------------------------
 	 * Unordered discrete configuration editor functions.
 	 * ------------------------------------------------------------------------
@@ -1744,8 +1928,6 @@ public class NaviCell {
 	}
 	
 	
-	
-	
 	// for testing purpose
 	public static void main(String[] args) {
 		NaviCell n = new NaviCell();
@@ -1756,7 +1938,13 @@ public class NaviCell {
 		n.importData("", "/Users/eric/wk/RNaviCell_test/DU145_data.txt", "mRNA Expression data", "test");
 		//n.importData("", "/Users/eric/wk/RNaviCell_test/ovca_copynumber.txt", "Discrete Copy number data", "test");
 		
-		n.continuousConfigOpen("", "test", "color");
+		n.mapStainingEditorOpen("");
+		n.mapStainingEditorSelectDatatable("", "test");
+		n.mapStainingEditorSelectSample("", "data");
+		n.mapStainingEditorSetTransparency("", 10);
+		n.mapStainingEditorApply("");
+		
+		//n.continuousConfigOpen("", "test", "color");
 //		n.continuousConfigSetAbsVal("", "color", "test", true);
 //		n.continuousConfigApply("", "test", "color");
 //		n.continuousConfigSetSampleMethod("", "color", "test", 0);
