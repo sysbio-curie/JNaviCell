@@ -99,7 +99,7 @@ public class NaviCell {
 	/**
 	 * Constructor
 	 */
-	NaviCell() {
+	public NaviCell() {
 		// nothing to be done here.
 	}
 
