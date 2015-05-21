@@ -1695,7 +1695,7 @@ public class NaviCell {
 	 * Set continuous configuration step count parameter to a given value.
 	 * @param module
 	 * @param sample_or_group string 'sample' or 'group'
-	 * @param datatable_parameter
+	 * @param datatable_parameter 'shape' or 'color' or 'size'
 	 * @param datatable_name
 	 * @param step_count integer value
 	 */
@@ -1719,7 +1719,7 @@ public class NaviCell {
 	public void continuousConfigSetColorAt(String module, String datatable_name, String sample_or_group, int index, String color_hex_value) {
 		increaseMessageID();
 		UrlEncodedFormEntity url = buildUrl(module, "nv_display_continuous_config_perform", 
-				new ArrayList<Object>(Arrays.asList("set_input_color", datatable_name, sample_or_group, index, color_hex_value)));
+				new ArrayList<Object>(Arrays.asList("set_input_color", datatable_name, "color", sample_or_group, index, color_hex_value)));
 		if (url != null) {
 			System.out.println(sendToServer(url));
 		}
@@ -1757,6 +1757,15 @@ public class NaviCell {
 		//n.importData("", "/Users/eric/wk/RNaviCell_test/ovca_copynumber.txt", "Discrete Copy number data", "test");
 		
 		n.continuousConfigOpen("", "test", "color");
+//		n.continuousConfigSetAbsVal("", "color", "test", true);
+//		n.continuousConfigApply("", "test", "color");
+//		n.continuousConfigSetSampleMethod("", "color", "test", 0);
+		//n.continuousConfigSwitchGroupTab("", "test", "test");
+		//n.continuousConfigSetGroupMethod("", "color", "test", 1);
+		//n.continuousConfigSetSelectionShape("", "test", "sample", 0, 1);
+		//n.continuousConfigSetStepCount("", "sample", "color", "test", 5);
+		//n.continuousConfigSetColorAt("", "test", "sample", 0, "000000");
+		//n.continuousConfigSetValueAt("", "test", "color", "sample", 0, -1);
 		
 //		try {
 //			Thread.sleep(1000);
