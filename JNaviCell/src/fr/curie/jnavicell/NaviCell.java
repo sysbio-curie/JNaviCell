@@ -3,20 +3,32 @@ package fr.curie.jnavicell;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
@@ -25,12 +37,11 @@ import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
-import org.apache.http.NameValuePair;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -95,6 +106,7 @@ public class NaviCell {
 	 */
 	private String session_id = "";
 	
+	private int packsize = 500000;
 	
 	/**
 	 * Constructor
@@ -227,7 +239,7 @@ public class NaviCell {
 		params.add(new BasicNameValuePair("mode", "cli2srv"));
 		params.add(new BasicNameValuePair("perform", "send_and_rcv"));
 		params.add(new BasicNameValuePair("data", str_data));
-		System.out.println(params);
+		//System.out.println(params);
 		
 		try {
 			url = new UrlEncodedFormEntity(params, "UTF-8");
@@ -277,6 +289,10 @@ public class NaviCell {
 		return client;
 	}
 
+	
+
+	
+	
 	/**
 	 * Send a POST request to the NaviCell server.
 	 * @param url
@@ -1998,5 +2014,110 @@ public class NaviCell {
 			System.out.println(sendToServer(url));
 		}
 	}
+
+	public void testBigdata(String fileName) {
+		String str_data = loadDataFromFile(fileName, true);
+		increaseMessageID();
+		sendBigData(str_data);
+	}
 	
+	private void sendBigData(String str_data) {
+
+		// buildUrl call
+		//buildUrl(module, "nv_import_datatables", 
+		//new ArrayList<Object>(Arrays.asList(biotype, datatableName, "", str_data, new JSONObject())));
+		
+		int packcount = 0; // number of 'packets'
+		int datalen = str_data.length();
+		System.out.println("datalen=" + datalen);
+		System.out.println("packsize="+packsize);
+		packcount = (int)(datalen/packsize)+1;
+		System.out.println("packcount = " + packcount);
+		
+		String biotype = "mRNA Expression data";
+		String datatableName = "test";
+		
+		String module = "";
+		//String action = "nv_import_datatables";
+		//ArrayList<Object> args = new ArrayList<Object>(Arrays.asList(biotype, datatableName, "", str_data, new JSONObject() ));
+
+		// send data string cut in packets
+		if (datalen > packsize) {
+
+			for (int i=0;i<packcount;i++) {
+				int stop = (i+1) * packsize;
+				int start = 0;
+				if (i>0)
+					start = (i * packsize) + 1;
+				if (stop > datalen)
+					stop = datalen - 1;
+				
+				StringBuilder sb = new StringBuilder();
+				for (int j=start;j<=stop;j++) 
+					sb.append(str_data.charAt(j));
+				
+				// packet example:
+				//{'packnum': 1, 'perform': 'filling', 'msg_id': 1004, 'packcount': 3, 'data': '@COMMAND {"msg_id": 1004, "action": "nv_import_datatables",
+				//"module": "", "args": ["mRNA expression data", "ovca-exp", "", "@DATA\\nGeneSymbol\\tTCGA_04_1648\\tTCGA_24_2297\\
+
+				
+				UrlEncodedFormEntity fill_url = null;
+				
+				ArrayList<Object> args = new ArrayList<Object>(Arrays.asList(biotype, datatableName, "", sb.toString(), new JSONObject() ));
+
+				// encode command string
+				JSONArray fill_ja = new JSONArray();
+				for (Object obj : args)
+					fill_ja.add(obj);
+				JSONObject fill_jo = new JSONObject();
+				fill_jo.put("module", module);
+				fill_jo.put("args", fill_ja);
+				fill_jo.put("msg_id", msg_id);
+				fill_jo.put("action", "nv_import_datatables");
+				String fill_cmd = "@COMMAND " + fill_jo.toJSONString();
+
+				ArrayList<NameValuePair> fill_params = new ArrayList<NameValuePair>();
+				fill_params.add(new BasicNameValuePair("id", session_id));
+				fill_params.add(new BasicNameValuePair("mode", "cli2srv"));
+				fill_params.add(new BasicNameValuePair("perform", "filling"));
+				fill_params.add(new BasicNameValuePair("packnum", Integer.toString(i+1)));
+				fill_params.add(new BasicNameValuePair("packcount", Integer.toString(packcount)));
+				fill_params.add(new BasicNameValuePair("data", fill_cmd));
+				
+				//System.out.println(fill_params);
+
+				try {
+					fill_url = new UrlEncodedFormEntity(fill_params, "UTF-8");
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				}
+				
+				if (fill_url != null) {
+					System.out.println("sending packet " + (i+1));
+					sendToServer(fill_url);
+				}
+			}
+		}
+		
+		// now encode global command string; this will trigger data rebuild from individual packets
+		
+		UrlEncodedFormEntity url = null;
+		
+		ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("data", "@@"));
+		params.add(new BasicNameValuePair("id", session_id));
+		params.add(new BasicNameValuePair("perform", "send_and_rcv"));
+		params.add(new BasicNameValuePair("packcount", Integer.toString(packcount)));
+		params.add(new BasicNameValuePair("mode", "cli2srv"));
+		params.add(new BasicNameValuePair("msg_id", Integer.toString(msg_id)));
+
+		try {
+			url = new UrlEncodedFormEntity(params, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+
+		if (url != null) System.out.println(sendToServer(url));
+		
+		}
 }

@@ -1,22 +1,43 @@
 package fr.curie.jnavicell;
 
+import java.io.IOException;
+
 public class Test {
 
 	public static void main(String[] args) {
+		
 		NaviCell n = new NaviCell();
+		
+		n.setProxyUrl("https://acsn.curie.fr/cgi-bin/nv_proxy.php");
+		n.setMapUrl("https://acsn.curie.fr/navicell/maps/acsn/master/index.php");
 
 		n.launchBrowser();
+		
+		//n.testBigdata("/Users/eric/wk/RNaviCell_test/DU145_data.txt");
+		n.testBigdata("/Users/eric/wk/RNaviCell_test/ovca_expression.txt");
+	
+//		try {
+//			n.testDirectConnection();
+//			
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+		
+		
+		//n.testBigdata("/Users/eric/wk/RNaviCell_test/ovca_copynumber.txt");
+		//n.testBigdata("/Users/eric/wk/RNaviCell_test/DU145_mut.txt");
+		
 		//n.importData("", "/Users/eric/wk/RNaviCell_test/DU145_mut.txt", "Mutation data", "test");
 		//n.importData("", "/Users/eric/wk/RNaviCell_test/DU145_CN.txt", "Discrete Copy number data", "test");
 		//n.importData("", "/Users/eric/wk/RNaviCell_test/DU145_data.txt", "mRNA Expression data", "test");
 		//n.importData("", "/Users/eric/wk/RNaviCell_test/ovca_copynumber.txt", "Discrete Copy number data", "test");
 
-		n.importData("", "/Users/eric/wk/RNaviCell_test/ovca_expression.txt", "mRNA Expression data", "test");
-		n.importSampleAnnotation("", "/Users/eric/wk/RNaviCell_test/ovca_sampleinfo.txt");
-		n.sampleAnnotationSelectOpen("");
-		n.sampleAnnotationSelectAnnotation("", "Ploidy", true);
-		n.sampleAnnotationSelectApply("");
-		n.sampleAnnotationSelectClose("");
+//		n.importData("", "/Users/eric/wk/RNaviCell_test/ovca_expression.txt", "mRNA Expression data", "test");
+//		n.importSampleAnnotation("", "/Users/eric/wk/RNaviCell_test/ovca_sampleinfo.txt");
+//		n.sampleAnnotationSelectOpen("");
+//		n.sampleAnnotationSelectAnnotation("", "Ploidy", true);
+//		n.sampleAnnotationSelectApply("");
+//		n.sampleAnnotationSelectClose("");
 		
 		
 //		n.mapStainingEditorOpen("");
