@@ -11,11 +11,19 @@ public class Test {
 		n.setProxyUrl("https://acsn.curie.fr/cgi-bin/nv_proxy.php");
 		n.setMapUrl("https://acsn.curie.fr/navicell/maps/acsn/master/index.php");
 
+		//n.setProxyUrl("https://navicell.curie.fr/cgi-bin/nv_proxy.php");
+		//n.setMapUrl("https://navicell.curie.fr/navicell/maps/cellcycle/master/index.php");
+		
 		n.launchBrowser();
 		
 		//n.testBigdata("/Users/eric/wk/RNaviCell_test/DU145_data.txt");
-		n.testBigdata("/Users/eric/wk/RNaviCell_test/ovca_expression.txt");
-	
+		//n.testBigdata("/Users/eric/wk/RNaviCell_test/ovca_expression.txt");
+		
+		n.importData("", "/Users/eric/wk/RNaviCell_test/ovca_expression.txt", "mRNA Expression data", "big_test");
+		
+		n.importSampleAnnotation("", "/Users/eric/wk/RNaviCell_test/ovca_sampleinfo.txt");
+		
+		
 //		try {
 //			n.testDirectConnection();
 //			
