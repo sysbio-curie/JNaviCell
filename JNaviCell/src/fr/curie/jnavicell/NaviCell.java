@@ -94,6 +94,10 @@ public class NaviCell {
 	 */
 	private String session_id = "";
 	
+	/**
+	 * Maximum size for data string. 
+	 * If size is greater than this limit, the data is cut and send by packsize 'packets' 
+	 */
 	private int packsize = 500000;
 	
 	/**
