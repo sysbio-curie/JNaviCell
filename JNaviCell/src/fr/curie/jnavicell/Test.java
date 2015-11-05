@@ -10,18 +10,54 @@ public class Test {
 		
 		n.setProxyUrl("https://acsn.curie.fr/cgi-bin/nv_proxy.php");
 		n.setMapUrl("https://acsn.curie.fr/navicell/maps/acsn/master/index.php");
+		
+		n.launchBrowser();
+		
+		try {
+			
+			n.importData("", "/Users/eric/wk/RNaviCell_test/ovca_expression.txt", "mRNA Expression data", "test");
+			n.importSampleAnnotation("", "/Users/eric/wk/RNaviCell_test/ovca_sampleinfo.txt");
+			
+			//n.importData("", "/Users/eric/wk/RNaviCell_test/DU145_data.txt",  "mRNA Expression data", "test");
+			
+			//int w = 1;
+			// select heatmap for visualization
+	        n.drawingConfigSelectHeatmap("", true);
+	        n.drawingConfigApply("");
+	        //Thread.sleep(w);
+
+	        // select sample and datatable 
+	        //n.heatmapEditorSelectSample("", 0,"data");
+	        n.heatmapEditorSelectSample("", 0,"TCGA_24_2297");
+	        //Thread.sleep(w);
+	        n.heatmapEditorSelectDatatable("", 0, "test");
+	        //Thread.sleep(w);
+
+	        // visualize the results
+	        n.heatmapEditorApply("");
+
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		
+		
+//		n.setProxyUrl("https://acsn.curie.fr/cgi-bin/nv_proxy.php");
+//		n.setMapUrl("https://acsn.curie.fr/navicell/maps/acsn/master/index.php");
 
 		//n.setProxyUrl("https://navicell.curie.fr/cgi-bin/nv_proxy.php");
 		//n.setMapUrl("https://navicell.curie.fr/navicell/maps/cellcycle/master/index.php");
 		
-		n.launchBrowser();
+		//n.launchBrowser();
 		
 		//n.testBigdata("/Users/eric/wk/RNaviCell_test/DU145_data.txt");
 		//n.testBigdata("/Users/eric/wk/RNaviCell_test/ovca_expression.txt");
 		
-		n.importData("", "/Users/eric/wk/RNaviCell_test/ovca_expression.txt", "mRNA Expression data", "big_test");
+		//n.importData("", "/Users/eric/wk/RNaviCell_test/ovca_expression.txt", "mRNA Expression data", "big_test");
 		
-		n.importSampleAnnotation("", "/Users/eric/wk/RNaviCell_test/ovca_sampleinfo.txt");
+		//n.importSampleAnnotation("", "/Users/eric/wk/RNaviCell_test/ovca_sampleinfo.txt");
 		
 		
 //		try {

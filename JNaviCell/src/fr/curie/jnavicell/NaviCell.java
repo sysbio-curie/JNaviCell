@@ -372,6 +372,44 @@ public class NaviCell {
 		return ret;
 	}
 	
+	/**
+	 * Returns true if NaviCell server is ready after data import.
+	 * @return boolean
+	 */
+	private boolean isImported(String module) {
+		boolean ret = false;
+		increaseMessageID();
+
+		UrlEncodedFormEntity url = buildUrl(module, "nv_is_imported", new ArrayList<Object>());
+		if (url != null) {
+			String rep = sendToServer(url);
+			JSONParser parser = new JSONParser();
+			JSONObject o;
+			try {
+				o = (JSONObject) parser.parse(rep);
+				if (o.get("data").toString().equals("true"))
+					ret = true;
+			} catch (org.json.simple.parser.ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		return ret;
+	}
+	
+	/**
+	 * Wait for NaviCell server to be ready after data import.
+	 * @param module
+	 */
+	private void waitForImported(String module) {
+		while (isImported(module) == false) {
+			try {
+				//System.out.println("waiting for server..");
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 	
 	/**
 	 * Launch a browser session with the current ID and map URL.
@@ -690,12 +728,14 @@ public class NaviCell {
 			sendBigDataToServer(module, 
 					"nv_import_datatables", 
 					new ArrayList<Object>(Arrays.asList(biotype, datatableName, "", str_data, new JSONObject())));
+			waitForImported(module);
 		}
 		else {
 			UrlEncodedFormEntity url = buildUrl(module, "nv_import_datatables", 
 					new ArrayList<Object>(Arrays.asList(biotype, datatableName, "", str_data, new JSONObject())));
 			if (url != null) {
 				sendToServer(url);
+				waitForImported(module);
 			}
 		}
 	}
@@ -712,12 +752,14 @@ public class NaviCell {
 			sendBigDataToServer(module, 
 					"nv_sample_annotation_perform", 
 					new ArrayList<Object>(Arrays.asList("import", str_data)));
+			waitForImported(module);
 		}
 		else {
 			UrlEncodedFormEntity url = buildUrl(module, "nv_sample_annotation_perform", 
 					new ArrayList<Object>(Arrays.asList("import", str_data)));
 			if (url != null) {
 				sendToServer(url);
+				waitForImported(module);
 			}
 		}
 	}
