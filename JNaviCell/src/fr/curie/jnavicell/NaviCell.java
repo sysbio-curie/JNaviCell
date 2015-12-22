@@ -417,9 +417,10 @@ public class NaviCell {
 	public void launchBrowser() {
 		increaseMessageID();
 		try {
-			if (session_id == "")
+			if (session_id == "") {
 				generateSessionID();
-			String url = map_url + "?id=" + session_id;
+			}
+			String url = map_url + "?id=" + session_id + "&proxy_url=" + proxy_url;
 			java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
 			waitForReady("");
 		}
